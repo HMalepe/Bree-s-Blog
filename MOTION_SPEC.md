@@ -25,7 +25,8 @@ Source of truth for every animation in `js/main.js`. Hand this file to an AI IDE
 6. **Parallax float** (`[data-speed]`): `y` goes from `+vh*speed/2` to `-vh*speed/2` across the viewport. `.float-card` also fades in over the first 25% and out over the last 25%.
 
 ## Section choreography
-### 0. Loader and hero (on load, after `document.fonts.ready`)
+### 0. Loader and hero
+The page always opens at the top (`history.scrollRestoration = 'manual'` inline in `<head>`), and scrolling stays locked (`lenis.stop()`) until the curtain has lifted. The intro starts once fonts **and** the hero photo are decoded, capped at 3.5s. A `#hash` link glides to its section after the curtain lifts.
 1. The "bree." word lifts and fades (0.7s, `power3.in`).
 2. The wine curtain wipes up (`clipPath inset(0 0 100% 0)`, 1.1s, `expo.inOut`).
 3. The hero bg goes from `scale 1.35` to 1 (2.4s). It overlaps step 2 by 0.75s.
@@ -36,7 +37,7 @@ Source of truth for every animation in `js/main.js`. Hand this file to an AI IDE
 - The gold SVG path is drawn with `strokeDashoffset L → 0`, scrubbed from `top 75%` to `bottom 60%`. `L` is the path's **on-screen** length, measured in JS and re-measured on refresh. Don't use `pathLength=1` here: the SVG is stretched (`preserveAspectRatio="none"`) with `vector-effect: non-scaling-stroke`, so Chrome lays dashes out in screen pixels and a unit-length dash never reaches the end of the path.
 - Each bubble runs a scrubbed timeline from `top 100%` to `top 40%`:
   - the circle goes from `scale .3, opacity 0` to 1
-  - the inner image reveals as an arch, `circle(0% at 50% 100%)` to `circle(80%)`
+  - each bubble holds two photos. The scenic outer photo settles from `scale 1.25` to 1, then the portrait rises over it as an arch, `circle(0% at 50% 100%)` to `circle(101%)`, which covers the bubble completely
   - the label fades up last
 
 ### 3–4. Featured and Notes
@@ -71,8 +72,8 @@ Each row: the rule draws `scaleX 0 → 1` (1.4s), then the number, key and value
 The cards rise 70px, stagger 0.12. On hover-capable devices they tilt toward the pointer (±5°, `gsap.quickTo`).
 
 ### 10. CTA arch and newsletter
-- The arch's top border radius, `var(--r)` (≈30vw), animates to 0. Its side inset animates from 5% to 0, scrubbed as it enters.
-- A sticky blurred bg stays behind the content. Its scale goes from 1.35 to 1.1 across the section. `.cta-arch` must use `overflow:clip`, not `hidden`: `hidden` makes the arch its own scroll container, so the sticky bg would stick to the arch and only cover its first screen.
+- The arch opens through `clip-path` only: `inset(0 5% 0 5% round 50% 50% 0 0 / R R 0 0)` → `inset(0 round 0)`, R = min(30vw, 380px), scrubbed as it enters. Don't animate margin or border-radius here: that re-lays-out and repaints the 250vh arch on every frame.
+- A sticky blurred bg stays behind the content. The blur is baked into `assets/capetown-blur.jpg` (320px, Gaussian ≈ `blur(18px)` at 1280px). A live `filter: blur()` on a full-screen layer cost 50–100ms frames while scrubbing. Its scale goes from 1.35 to 1.1 across the section. `.cta-arch` must use `overflow:clip`, not `hidden`: `hidden` makes the arch its own scroll container, so the sticky bg would stick to the arch and only cover its first screen.
 - Floating cards use the parallax float primitive with different speeds. The centre card has a CSS blob that morphs its border radius on a 9s loop.
 - Newsletter (scrubbed from `top 85%` to `top 25%`):
   - the pale layer fades in over the warm bg
@@ -81,6 +82,12 @@ The cards rise 70px, stagger 0.12. On hover-capable devices they tilt toward the
 
 ### 11. Footer
 The giant "bree." wordmark goes from `yPercent 100` to 0 as the footer scrolls in. It rises out of the bottom edge.
+
+## Performance rules (measured, see git history for the numbers)
+- No live `filter: blur()` on large or scrubbed layers. Bake the blur into the image instead.
+- Scrub only `transform`, `opacity` and `clip-path`. Never scrub margins, sizes or border-radius on big elements.
+- Anything expensive to measure (e.g. `getPointAtLength`) is sampled once at startup, behind the loader. Function-based tween values are re-run lazily on the first frame after every refresh, which lands mid-scroll.
+- Split-text containers must not be `display:grid`: every letter/word span would become its own grid row. `.gs-title` uses flex.
 
 ## Tuning knobs
 - Gallery length: `end: '+=' + H() * 7` → lower = faster

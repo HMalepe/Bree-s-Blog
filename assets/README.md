@@ -18,8 +18,9 @@ workflow with a manifest of fresh Canva export links. If a file goes missing, it
 | `road-trip.jpg` | 3:2 | [MAHWNQzw0zE](https://www.canva.com/M/MAHWNQzw0zE) | "Finishing the course" note + float card · gallery · "Content" step |
 | `flatlay.jpg` | 1:1 | [MAHWNerWVTk](https://www.canva.com/M/MAHWNerWVTk) | "Natural" card · "Reading a label" note · gallery · "Collaborations" step |
 | `pool-sunset.jpg` | 4:5 | [MAHWNUrUf_0](https://www.canva.com/M/MAHWNUrUf_0) | bubble "Rituals" · "Sunday reset" card + float card · gallery |
-| `capetown.jpg` | 16:9 | [MAHWNYaoW_M](https://www.canva.com/M/MAHWNYaoW_M) | CTA arch background · gallery |
+| `capetown.jpg` | 16:9 | [MAHWNYaoW_M](https://www.canva.com/M/MAHWNYaoW_M) | bubble "Myths" outer · gallery |
+| `capetown-blur.jpg` | 16:9 | derived | CTA arch background: 320px, blur and saturation baked in (4.5 KB). Regenerate if `capetown.jpg` changes |
 | `wheat-laugh.jpg` | 3:4 | [MAHWNTImaOE](https://www.canva.com/M/MAHWNTImaOE) | bubble "Quizzes" · gallery |
 
-The outer rings of the four About bubbles keep their gradients on purpose, as coloured frames behind the arch reveal.
+The four About bubbles each have a scenic outer photo (beach, Cape Town, savanna, dunes). The portrait rises over it as an arch.
 Keep each file under about 400KB (export as JPG at 80% quality, or convert to WebP and update the paths).

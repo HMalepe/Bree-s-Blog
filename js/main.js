@@ -103,16 +103,40 @@
   gsap.set(heroWords, { yPercent: 118 });
   gsap.set('.hero [data-fade]', { y: 26, autoAlpha: 0 });
 
+  // Always open at the top with scrolling locked until the curtain has lifted,
+  // otherwise a wheel flick (or a restored scroll position) plays the intro off-screen.
+  // (history.scrollRestoration is set to 'manual' inline in <head>, before Chrome restores)
+  scrollTo(0, 0);
+  if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+  const lockScroll = on => lenis ? (on ? lenis.stop() : lenis.start()) : (document.body.style.overflow = on ? 'hidden' : '');
+  lockScroll(true);
+
   const intro = gsap.timeline({ paused: true })
     .to('.loader-word', { yPercent: -40, autoAlpha: 0, duration: .7, ease: 'power3.in' })
     .to('.loader', { clipPath: 'inset(0% 0% 100% 0%)', duration: 1.1, ease: 'expo.inOut' }, '-=.15')
     .set('.loader', { display: 'none' })
+    .call(() => {
+      lockScroll(false);
+      const target = location.hash.length > 1 && document.querySelector(location.hash);
+      if (target && lenis) lenis.scrollTo(target, { duration: 1.6 });
+    })
     .from('.hero-bg .ph', { scale: 1.35, duration: 2.4 }, '-=.75')
     .to(heroWords, { yPercent: 0, duration: 1.4, stagger: .08 }, '-=2.1')
     .to('.hero [data-fade]', { y: 0, autoAlpha: 1, duration: 1.1, stagger: .12, ease: 'power3.out' }, '-=1.1');
 
-  const start = () => { intro.play(); ScrollTrigger.refresh(); };
-  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(start, 250));
+  // Lift the curtain only once fonts AND the hero photo are ready (decoded, so the
+  // zoom starts on the photo, not the fallback gradient), but never wait > 3.5s.
+  const heroSrc = (getComputedStyle($('.hero-bg .ph')).backgroundImage.match(/url\(["']?([^"')]+)/) || [])[1];
+  const imageReady = src => new Promise(res => {
+    const img = new Image();
+    img.onload = () => (img.decode ? img.decode() : Promise.resolve()).then(res, res);
+    img.onerror = res;
+    img.src = src;
+  });
+  Promise.race([
+    Promise.all([document.fonts ? document.fonts.ready : null, heroSrc ? imageReady(heroSrc) : null]),
+    new Promise(res => setTimeout(res, 3500)),
+  ]).then(() => setTimeout(() => { intro.play(); ScrollTrigger.refresh(); }, 250));
 
   // hero parallax out
   gsap.to('.hero-bg .ph', { yPercent: 14, ease: 'none',
@@ -143,18 +167,22 @@
   // The SVG is stretched (preserveAspectRatio="none") with a non-scaling
   // stroke, so dashes are laid out in screen pixels. pathLength can't be
   // used; measure the on-screen length instead and redo it on refresh.
+  // getPointAtLength is slow (≈150–250ms for 400 calls), so the path is
+  // sampled once here, while the loader still covers the page; re-measuring
+  // on refresh is then pure arithmetic and never stalls a scroll frame.
   const curve = $('#curve');
+  const curvePts = (() => {
+    const total = curve.getTotalLength(), N = 240, pts = [];
+    for (let i = 0; i <= N; i++) { const pt = curve.getPointAtLength(total * i / N); pts.push([pt.x, pt.y]); }
+    return pts;
+  })();
   const curveLen = () => {
     const svg = curve.ownerSVGElement, vb = svg.viewBox.baseVal;
     const sx = svg.clientWidth / vb.width, sy = svg.clientHeight / vb.height;
-    const total = curve.getTotalLength(), N = 400;
-    let len = 0, prev = curve.getPointAtLength(0);
-    for (let i = 1; i <= N; i++) {
-      const pt = curve.getPointAtLength(total * i / N);
-      len += Math.hypot((pt.x - prev.x) * sx, (pt.y - prev.y) * sy);
-      prev = pt;
-    }
-    len = Math.ceil(len) + 2;
+    let len = 0;
+    for (let i = 1; i < curvePts.length; i++)
+      len += Math.hypot((curvePts[i][0] - curvePts[i - 1][0]) * sx, (curvePts[i][1] - curvePts[i - 1][1]) * sy);
+    len = Math.ceil(len * 1.002) + 4;   // chords slightly undershoot the true arc length
     curve.style.strokeDasharray = len;
     return len;
   };
@@ -166,7 +194,8 @@
     gsap.timeline({ defaults: { ease: 'none' },
       scrollTrigger: { trigger: b, start: 'top 100%', end: 'top 40%', scrub: 1 } })
       .fromTo(media, { scale: .3, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 1, ease: 'power2.out' })
-      .fromTo(inner, { clipPath: 'circle(0% at 50% 100%)' }, { clipPath: 'circle(80% at 50% 100%)', duration: 1 }, .55)
+      // the portrait rises as an arch from the bottom until it fully replaces the scenic outer photo
+      .fromTo(inner, { clipPath: 'circle(0% at 50% 100%)' }, { clipPath: 'circle(101% at 50% 100%)', duration: 1 }, .55)
       .fromTo($('.ph', inner.parentNode), { scale: 1.25 }, { scale: 1, duration: 1.4 }, 0)
       .fromTo(label, { y: 26, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: .5 }, 1.1);
   });
@@ -337,10 +366,13 @@
      10. CTA — arch opens, cards float + fade, bg fades to pale,
          newsletter ink shifts from cream to wine
      ------------------------------------------------------------------ */
+  // The arch opens through clip-path only: animating margin + border-radius
+  // re-laid-out and repainted the whole 250vh arch on every frame.
   const arch = $('.cta-arch');
+  const archClip = (side, r) => `inset(0% ${side}% 0% ${side}% round 50% 50% 0% 0% / ${r}px ${r}px 0px 0px)`;
   gsap.fromTo(arch,
-    { '--r': () => Math.min(vw() * .3, 380) + 'px', '--inset': '5%' },
-    { '--r': '0px', '--inset': '0%', ease: 'none',
+    { clipPath: () => archClip(5, Math.round(Math.min(vw() * .3, 380))) },
+    { clipPath: archClip(0, 0), ease: 'none',
       scrollTrigger: { trigger: arch, start: 'top 100%', end: 'top 5%', scrub: true, invalidateOnRefresh: true } });
   gsap.fromTo('.cta-bg .ph', { scale: 1.35 }, { scale: 1.1, ease: 'none',
     scrollTrigger: { trigger: arch, start: 'top bottom', end: 'bottom bottom', scrub: true } });
@@ -360,7 +392,8 @@
     scrollTrigger: { trigger: '.news', start: 'top 85%', end: 'top 25%', scrub: true } })
     .to('.cta-pale', { opacity: 1 }, 0)
     // on .cta-arch so the float-card labels follow the ink too
-    .fromTo('.cta-arch', { '--news-ink': '#FFF8EE' }, { '--news-ink': '#6B1D22' }, 0);
+    .fromTo('.cta-arch', { '--news-ink': '#FFF8EE', '--label-shadow': 'rgba(40,20,10,0.55)' },
+                         { '--news-ink': '#6B1D22', '--label-shadow': 'rgba(40,20,10,0)' }, 0);
 
   /* ------------------------------------------------------------------
      11. FOOTER — wordmark rises out of the bottom edge

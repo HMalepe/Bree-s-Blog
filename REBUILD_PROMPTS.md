@@ -87,13 +87,13 @@ In js/main.js:
 ### 4. Hero and intro timeline
 ```
 Hero: min-height 100svh, 2-column grid (1 column under 760px), cream text over a full-bleed .hero-bg.
-- The .hero-bg .ph sits at inset:-10% 0 with blur(1px), under a darkening gradient (rgba(0,0,0,.06) → .36).
+- The .hero-bg .ph sits at inset:-10% 0 (will-change:transform, no filter), under a darkening gradient (rgba(0,0,0,.06) → .36). Under 760px set background-position:28% center so the subject stays in the portrait crop.
 - Title h1 [data-split="hero"]: "Bree" then a block line with a small italic "behind the" (.34em) and "Counter". Serif clamp(52px,8.2vw,124px), line-height .98, letter-spacing -.03em. Line 2 is indented .4em.
 - Right column: "South Africa", then a 3-col justified grid of the words "Pharmacist by day, creator by night". Below it, a serif lead "Honest health notes, small rituals, and life between prescriptions." and a .link "Start reading". Both groups are [data-fade].
 - Scroll cue: a 1px × 48px line at bottom-centre with a cream bar looping translateY(-100%→100%) every 2s.
-Intro (paused timeline, played after document.fonts.ready + 250ms, then ScrollTrigger.refresh()):
+Intro. Put history.scrollRestoration='manual' in an inline <head> script, scrollTo(0,0) plus lenis.scrollTo(0,{immediate:true,force:true}), and lenis.stop() until the curtain is gone. Play the paused timeline (then ScrollTrigger.refresh()) 250ms after fonts AND the hero photo are loaded and decoded (new Image + img.decode()), capped with a 3.5s Promise.race. Also add <link rel="preload" as="image" href="assets/hero-beach.jpg" fetchpriority="high">:
  1 .loader-word → yPercent -40, autoAlpha 0, .7s power3.in
- 2 .loader clipPath inset(0 0 100% 0), 1.1s expo.inOut at "-=.15", then display:none
+ 2 .loader clipPath inset(0 0 100% 0), 1.1s expo.inOut at "-=.15", then display:none, then a .call() that runs lenis.start() and glides to location.hash if present
  3 .hero-bg .ph from scale 1.35 over 2.4s at "-=.75"
  4 hero words (pre-set to yPercent 118) → 0, 1.4s, stagger .08 at "-=2.1"
  5 hero [data-fade] (pre-set y 26, autoAlpha 0) → rest, 1.1s, stagger .12, power3.out at "-=1.1"
@@ -112,11 +112,12 @@ Four .bubble blocks, absolutely placed (b1 top 2% right 4%, b2 top 28% left 3%, 
 Bubbles and labels: Health/Notes "Explain it like a friend", Series/Myths "Myths, gently busted", Play/Quizzes "Test what you know", Off duty/Rituals "Life off the clock". data-speed: .08, -.06, .1, -.05.
 Motion:
 - Curve draw, scrubbed (trigger #orbit, top 75% → bottom 60%, scrub 1, invalidateOnRefresh): strokeDashoffset L → 0.
-  IMPORTANT: do NOT use pathLength="1". The SVG is stretched with a non-scaling stroke, so Chrome lays out dashes in screen pixels. Measure L in JS: sample 400 points with getPointAtLength, scale dx by svg.clientWidth/1000 and dy by svg.clientHeight/1400, sum the segment lengths, then ceil +2. Set strokeDasharray = L and use a function value so it re-measures on refresh.
+  IMPORTANT: do NOT use pathLength="1". The SVG is stretched with a non-scaling stroke, so Chrome lays out dashes in screen pixels. Measure L in JS: sample 240 points with getPointAtLength ONCE at startup (it is slow, ≈150–250ms, and must not run mid-scroll) and cache them; the function value then scales each cached segment by svg.clientWidth/1000 and svg.clientHeight/1400, sums them, and returns ceil(L*1.002)+4. Set strokeDasharray = L so it re-measures on refresh.
 - Each bubble runs a scrubbed timeline (top 100% → top 40%, scrub 1, ease none):
   media scale .3/autoAlpha 0 → 1 (dur 1, power2.out, at 0)
-  inner clipPath circle(0% at 50% 100%) → circle(80% at 50% 100%) (dur 1, at .55): an arch rising from the bottom
-  inner .ph scale 1.25 → 1 (dur 1.4, at 0)
+  inner clipPath circle(0% at 50% 100%) → circle(101% at 50% 100%) (dur 1, at .55): the portrait rises as an arch until it fully replaces the scenic outer photo
+  outer .ph scale 1.25 → 1 (dur 1.4, at 0)
+  (Give each bubble a real scenic OUTER photo plus a portrait INNER photo. Give .bubble-side a background:var(--bg) with padding .12em .3em so the curve passes behind the labels instead of through them.)
   label y 26/autoAlpha 0 → rest (dur .5, at 1.1)
 - [data-speed] parallax: y goes from +vh*speed/2 to -vh*speed/2 across the viewport (scrub true, invalidateOnRefresh).
 ```
@@ -137,7 +138,7 @@ Motion:
 ### 7. Gallery sequence (the signature piece)
 ```
 Section .gs#gallery > .gs-stage (100svh, overflow hidden, bg var(--bg)). The stage contains:
-- h2.gs-title "Gallery": absolutely centred, serif wine clamp(64px,13vw,210px), z 3.
+- h2.gs-title "Gallery": absolute inset 0 with display:FLEX, align/justify centre (NOT grid: once split into letter spans, grid puts each letter on its own row), serif wine clamp(64px,13vw,210px), z 3.
 - .gs-cols: absolute, top 0, left 50%, translateX(-50%), width min(100%,1280px,125vh). Grid 1fr 1.25fr 1fr (1fr 1.5fr 1fr on mobile), gap clamp(8px,1vw,14px). Three .gs-col flex columns with data-shift -0.22 / 0 / 0.16.
   Left column tiles: portrait, square, portrait, square. Centre: square, wide(4:3), .gs-focus (portrait 3:4), square. Right: square, portrait, square, portrait.
 - Inside .gs-focus:
@@ -187,16 +188,16 @@ FAQ: centred head "Asked Often" / "Questions from <em>the comments</em>". A 980p
 ### 11. CTA arch and newsletter
 ```
 .cta: a right-aligned wine h2 [data-split] "A moment to connect <em>before the next post</em>" (em on its own line, max 20ch).
-.cta-arch sets the custom properties --r:0px, --inset:0%, --news-ink:var(--cream). It has margin-inline var(--inset), border-radius 50% 50% 0 0 / var(--r) var(--r) 0 0, overflow hidden, min-height 250vh, color var(--news-ink), isolation isolate. Inside it:
-- .cta-bg: position sticky, top 0, 100svh, margin-bottom -100svh, z -1. It holds a .ph (blur 18px, saturate 1.1, scale 1.15) and a .cta-pale layer (linear #EFE6DA → #E4D6C4, opacity 0).
+.cta-arch sets --news-ink:var(--cream). It has overflow:clip (NOT hidden: hidden makes it a scroll container and breaks the sticky bg), min-height 250vh, color var(--news-ink), isolation isolate. Inside it:
+- .cta-bg: position sticky, top 0, 100svh, margin-bottom -100svh, z -1. It holds a .ph using a PRE-BLURRED image (assets/capetown-blur.jpg: 320px wide, Gaussian radius 4.5, saturation ×1.1, no CSS filter), scale 1.15, will-change transform, and a .cta-pale layer (linear #EFE6DA → #E4D6C4, opacity 0, will-change opacity). A live filter:blur(18px) here drops frames badly while scrubbing.
 - Three a.float-card (clamp(130px,15vw,200px) wide, 4:3 image + caption): fc1 right/top 14vh speed .35, fc2 left/top 95vh speed -.2, fc3 right+4vw/top 140vh speed .25.
 - .cta-card: centred, margin-top 48vh, width min(86%,380px), bg rgba(190,150,70,.78), colour cream, speed .12. Holds the h3 "Let's make something worth sharing.", a .link "Get in touch" (mailto) and a .blob whose border-radius morphs on a 9s loop.
 - .news: margin-top ~70vh, width min(100% - 2*pad, 520px). Holds a pulsing dot (2.4s), an h2 [data-split] "One honest note <em>a week</em>" (em indented 1.4em), and a form (email input + "→" button, bottom border currentColor) with a small#newsMsg.
 Motion:
-- The arch opens: fromTo {'--r': min(30vw,380px), '--inset':'5%'} → {'--r':'0px','--inset':'0%'}, trigger top 100% → top 5%, scrub true, invalidateOnRefresh.
+- The arch opens with clip-path ONLY: fromTo {clipPath: () => `inset(0% 5% 0% 5% round 50% 50% 0% 0% / ${R}px ${R}px 0px 0px)`} with R = round(min(30vw,380)) → {clipPath: 'inset(0% 0% 0% 0% round 50% 50% 0% 0% / 0px 0px 0px 0px)'}, trigger top 100% → top 5%, scrub true, invalidateOnRefresh.
 - The bg .ph goes scale 1.35 → 1.1 across the arch (top bottom → bottom bottom).
 - [data-speed] parallax as in step 5. Float cards also fade autoAlpha 0 → 1 over the first 25% and 1 → 0 over the last 25%.
-- Newsletter (trigger .news, top 85% → top 25%, scrub): .cta-pale opacity → 1, and '--news-ink' on .cta-arch goes from #FFF8EE to #6B1D22. The newsletter text AND the float-card labels switch from cream to wine as the background turns pale; the .cta-card keeps cream.
+- Newsletter (trigger .news, top 85% → top 25%, scrub): .cta-pale opacity → 1, and '--news-ink' on .cta-arch goes from #FFF8EE to #6B1D22, while '--label-shadow' goes rgba(40,20,10,.55) → rgba(40,20,10,0). The float-card labels use text-shadow 0 1px 12px var(--label-shadow), so they stay legible on bright sky. The newsletter text AND the float-card labels switch from cream to wine as the background turns pale; the .cta-card keeps cream.
 - The form submit is preventDefault'd and shows "You're on the list. First note lands soon." (TODO: wire a provider).
 ```
 
