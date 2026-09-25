@@ -52,4 +52,5 @@ Best photo spots: hero bg (wide, warm), gallery **focus tile** (`.gs-focus`, Bre
 - Loader auto-hides after 5s even if JS dies
 
 ## Deploy
-Drag the folder into Vercel / Netlify, or push to GitHub and import. No build command, output dir = root.
+Live on Vercel (project `bree-s-blog`, linked to this repo; every push to the production branch redeploys).
+No build command, output dir = root. `.vercelignore` keeps the docs, prompts, JSON bundle and scripts out of the public site.

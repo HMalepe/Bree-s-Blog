@@ -1,0 +1,5 @@
+# Only the site ships. Docs, prompts, the JSON bundle and tooling stay in the repo.
+*.md
+.cursorrules
+bree-site.json
+scripts/
