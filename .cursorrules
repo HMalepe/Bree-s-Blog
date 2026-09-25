@@ -7,6 +7,6 @@
 - When a tween's parent starts `visibility:hidden`, use `fromTo` with explicit end values, not `from` (from() captures the inherited hidden state).
 - Design tokens are the `:root` vars at the top of `styles.css`. Don't hardcode colours elsewhere.
 - Fonts: Libre Baskerville (serif, headings) + Inter Tight (sans, UI).
-- Image slots are `.ph` blocks; real photos go in `/assets` via `--img:url()` or `<img>` inside the same wrapper.
+- Image slots are `.ph` blocks. Photos live in `/assets` and are set inline: `style="background-image:url('assets/x.jpg'),var(--grad)"` (the gradient stays underneath as a fallback). Never put a relative `url()` in a custom property: it resolves against the stylesheet, not the page.
 - Health content is educational — keep the "not medical advice" footer line.
 - Test at 390px and 1280px wide; no horizontal scroll.

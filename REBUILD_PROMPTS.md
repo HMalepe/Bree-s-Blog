@@ -55,7 +55,7 @@ Base styles:
 - Lenis helpers: html.lenis,html.lenis body{height:auto}; .lenis.lenis-smooth{scroll-behavior:auto!important}; .lenis.lenis-stopped{overflow:hidden}.
 - .label: serif, wine, clamp(15px,1.3vw,18px), wrapped in "( " and " )" via ::before/::after.
 - .link: 1px underline pseudo-element. On hover it scales to 0 over .6s var(--ease-out); the transform-origin flips from right to left, so the line exits in the direction you read.
-- .ph placeholder: background-image is var(--img) layered over var(--grad). It gets a film-grain ::after (inline SVG feTurbulence, baseFrequency .9, opacity .18, mix-blend overlay). Classes .t1–.t6 set --grad to --g1–--g6.
+- .ph placeholder: background-image is var(--grad). Real photos are set inline in the HTML as style="background-image:url('assets/x.jpg'),var(--grad)", so the gradient stays as a fallback. Never pass a relative url() through a custom property: Chrome resolves it against the stylesheet (css/assets/…). It gets a film-grain ::after (inline SVG feTurbulence, baseFrequency .9, opacity .18, mix-blend overlay). Classes .t1–.t6 set --grad to --g1–--g6.
 - Split-text masks: .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.14em;margin-bottom:-.14em}; .wi,.ch{display:inline-block;will-change:transform}.
 ```
 

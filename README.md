@@ -33,12 +33,14 @@ node scripts/bundle.mjs                            # regenerate after any change
 node scripts/unpack.mjs bree-site.json ./copy      # rebuild the site from it
 ```
 
-## Swap placeholders for real photos
-Every image slot is a `.ph` gradient block. Two options:
-1. Quick: add a CSS var, e.g. `<div class="ph t2" style="--img:url('assets/bree-portrait.jpg')"></div>`
-2. Proper: replace with `<img src="assets/x.jpg" alt="..." loading="lazy">` styled `width:100%;height:100%;object-fit:cover` — animations target the wrapper, so they keep working.
-
-Best photo spots: hero bg (wide, warm), gallery **focus tile** (`.gs-focus`, Bree portrait), bubbles (square crops), cards (4:5 / 16:10).
+## Photos
+Every image slot is a `.ph` block with the photo set inline over its fallback gradient:
+`<div class="ph t2" style="background-image:url('assets/x.jpg'),var(--grad)"></div>`.
+The 12 photos (AI-generated in Canva) and where each one is used are listed in
+`assets/README.md`. Until a file is in `/assets` its slot shows the gradient.
+To use a different photo, drop it in `/assets` with the same filename, or change the path.
+Keep the `url()` inline: a relative `url()` passed through a CSS custom property resolves
+against `css/`, not the page.
 
 ## Before launch
 - Replace `hello@example.com` (3 places)

@@ -6,11 +6,11 @@ Open the `bree-site` folder in your IDE first so the agent can read `CLAUDE.md` 
 
 ### 1. Drop in real photos
 ```
-I've added photos to /assets (list them). Replace the .ph placeholders with them:
-hero bg → the widest warm shot, .gs-focus → the best portrait, bubbles → square crops,
-cards → the rest. Use <img loading="lazy" decoding="async"> with object-fit:cover inside
-the existing wrappers so every animation keeps working. Add descriptive alt text.
-Compress anything over 400KB to WebP. Don't touch main.js motion logic.
+I've added photos to /assets (list them). Every .ph slot already has an inline
+style="background-image:url('assets/NAME.jpg'),var(--grad)" (see assets/README.md for the map).
+Point each slot at the best-fitting photo: hero bg → widest warm shot, .gs-focus → best portrait,
+bubble inners → square crops, cards → the rest. Keep the url() inline (never via a CSS custom
+property). Compress anything over 400KB to WebP. Don't touch main.js motion logic.
 ```
 
 ### 2. Port to Next.js (App Router) without losing the motion
