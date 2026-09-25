@@ -1,8 +1,10 @@
 # Photos
 
 12 AI-generated images (Canva, generated 2026-09-25). They show fictional women, not Bree.
-Download each one from Canva: open the link, then click **Download**. Save it here with the exact filename.
-Until a file is present, its slots show the fallback gradient, so the site never looks broken.
+All 12 are committed here: long edge ≤ 1600px, progressive JPEG, quality 80, 96–179 KB each.
+They were exported from the Canva design "Bree site photos – export" (pages 2–13) and pulled in by
+`.github/workflows/fetch-assets.yml`. To swap one, replace the file under the same name, or re-run that
+workflow with a manifest of fresh Canva export links. If a file goes missing, its slots fall back to the gradient.
 
 | File | Ratio | Canva | Used in |
 |---|---|---|---|

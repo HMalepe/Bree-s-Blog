@@ -72,7 +72,7 @@ The cards rise 70px, stagger 0.12. On hover-capable devices they tilt toward the
 
 ### 10. CTA arch and newsletter
 - The arch's top border radius, `var(--r)` (≈30vw), animates to 0. Its side inset animates from 5% to 0, scrubbed as it enters.
-- A sticky blurred bg stays behind the content. Its scale goes from 1.35 to 1.1 across the section.
+- A sticky blurred bg stays behind the content. Its scale goes from 1.35 to 1.1 across the section. `.cta-arch` must use `overflow:clip`, not `hidden`: `hidden` makes the arch its own scroll container, so the sticky bg would stick to the arch and only cover its first screen.
 - Floating cards use the parallax float primitive with different speeds. The centre card has a CSS blob that morphs its border radius on a 9s loop.
 - Newsletter (scrubbed from `top 85%` to `top 25%`):
   - the pale layer fades in over the warm bg
