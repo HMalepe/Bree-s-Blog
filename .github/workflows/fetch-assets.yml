@@ -1,0 +1,59 @@
+# Downloads photos from Canva export links into /assets, optimises them
+# for the web, and commits them to the branch the workflow runs on.
+# Run manually (Actions tab or API) with `manifest` = JSON {"file-name": "https://…canva…"}.
+name: Fetch assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        description: 'JSON object: {"hero-beach": "https://export-download.canva.com/…", …}'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install --quiet pillow==11.0.0
+
+      - name: Download and optimise
+        env:
+          MANIFEST: ${{ inputs.manifest }}
+        run: |
+          python - <<'PY'
+          import io, json, os, re, urllib.request
+          from urllib.parse import urlparse
+          from PIL import Image
+
+          manifest = json.loads(os.environ['MANIFEST'])
+          for name, url in manifest.items():
+              if not re.fullmatch(r'[a-z0-9-]+', name):
+                  raise SystemExit(f'bad file name: {name!r}')
+              host = urlparse(url).hostname or ''
+              if urlparse(url).scheme != 'https' or not (host == 'canva.com' or host.endswith('.canva.com')):
+                  raise SystemExit(f'refusing non-Canva URL for {name}')
+              data = urllib.request.urlopen(url, timeout=60).read()
+              img = Image.open(io.BytesIO(data)).convert('RGB')
+              img.thumbnail((1600, 1600), Image.LANCZOS)   # long edge ≤ 1600px
+              out = f'assets/{name}.jpg'
+              img.save(out, 'JPEG', quality=80, optimize=True, progressive=True)
+              print(f'{out}: {img.width}x{img.height}, {os.path.getsize(out) // 1024} KB')
+          PY
+
+      - name: Commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/*.jpg
+          git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
+          git commit -m "Add site photos from Canva export"
+          git push
