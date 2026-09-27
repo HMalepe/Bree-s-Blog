@@ -1,6 +1,10 @@
-# Downloads photos from Canva export links into /assets, optimises them
-# for the web, and commits them to the branch the workflow runs on.
-# Run manually (Actions tab or API) with `manifest` = JSON {"file-name": "https://…canva…"}.
+# Fetches site media into /assets and commits it to the branch the workflow runs on.
+# Run manually (Actions tab or API) with any of:
+#   manifest     = JSON {"file-name": "https://…canva…"}: photos, optimised to JPG
+#   video_search = a keyword ("ocean waves"): lists free Mixkit clips in the job log only
+#   video_url    = a clip URL (assets.mixkit.co / videos.pexels.com): trimmed and encoded to
+#                  assets/hero-1080.mp4, hero-720.mp4 and hero-poster.jpg (the hero background)
+# Mixkit and Pexels clips are free for commercial use with no attribution required.
 name: Fetch assets
 
 on:
@@ -8,7 +12,21 @@ on:
     inputs:
       manifest:
         description: 'JSON object: {"hero-beach": "https://export-download.canva.com/…", …}'
-        required: true
+        required: false
+      video_search:
+        description: 'Keyword to list Mixkit clips for (log only)'
+        required: false
+      video_url:
+        description: 'Clip URL (assets.mixkit.co / videos.pexels.com) to encode as the hero video'
+        required: false
+      video_start:
+        description: 'Seconds to skip at the start of the clip'
+        required: false
+        default: '0'
+      video_duration:
+        description: 'Seconds to keep (the site loops it)'
+        required: false
+        default: '12'
 
 permissions:
   contents: write
@@ -23,9 +41,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      - run: pip install --quiet pillow==11.0.0
+      - run: pip install --quiet pillow==11.0.0 imageio-ffmpeg==0.6.0
 
       - name: Download and optimise
+        if: ${{ inputs.manifest != '' }}
         env:
           MANIFEST: ${{ inputs.manifest }}
         run: |
@@ -49,11 +68,80 @@ jobs:
               print(f'{out}: {img.width}x{img.height}, {os.path.getsize(out) // 1024} KB')
           PY
 
+      - name: Search Mixkit
+        if: ${{ inputs.video_search != '' }}
+        env:
+          QUERY: ${{ inputs.video_search }}
+        run: |
+          python - <<'PY'
+          import html, os, re, urllib.request
+          slug = re.sub(r'[^a-z0-9]+', '-', os.environ['QUERY'].lower()).strip('-')
+          for page in (f'https://mixkit.co/free-stock-video/{slug}/', f'https://mixkit.co/free-stock-video/{slug}/?page=2'):
+              req = urllib.request.Request(page, headers={'User-Agent': 'Mozilla/5.0'})
+              try:
+                  src = urllib.request.urlopen(req, timeout=30).read().decode('utf-8', 'replace')
+              except Exception as e:
+                  print(f'{page}: {e}'); continue
+              print(f'== {page} ({len(src)} bytes)')
+              seen = set()
+              for m in re.finditer(r'assets\.mixkit\.co/videos/(\d+)/\1-\d+\.mp4', src):
+                  vid = m.group(1)
+                  if vid in seen: continue
+                  seen.add(vid)
+                  near = src[max(0, m.start() - 3000):m.end() + 3000]
+                  t = re.search(r'item-grid-card__title[^>]*>\s*([^<]+)<', near)
+                  title = html.unescape(t.group(1).strip()) if t else '?'
+                  print(f'{vid}\t{title}\thttps://assets.mixkit.co/videos/{vid}/{vid}-1080.mp4')
+          PY
+
+      - name: Encode hero video
+        if: ${{ inputs.video_url != '' }}
+        env:
+          URL: ${{ inputs.video_url }}
+          START: ${{ inputs.video_start }}
+          DURATION: ${{ inputs.video_duration }}
+        run: |
+          python - <<'PY'
+          import os, subprocess, urllib.request
+          from urllib.parse import urlparse
+          import imageio_ffmpeg
+          ff = imageio_ffmpeg.get_ffmpeg_exe()
+          url = os.environ['URL']
+          host = urlparse(url).hostname or ''
+          if urlparse(url).scheme != 'https' or host not in ('assets.mixkit.co', 'videos.pexels.com'):
+              raise SystemExit(f'refusing video URL from {host!r}')
+          start = float(os.environ.get('START') or 0)
+          dur = float(os.environ.get('DURATION') or 12)
+          if not (0 <= start <= 120 and 3 <= dur <= 30):
+              raise SystemExit('video_start / video_duration out of range')
+          req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+          open('/tmp/src.mp4', 'wb').write(urllib.request.urlopen(req, timeout=120).read())
+          print('source', os.path.getsize('/tmp/src.mp4') // 1024, 'KB')
+
+          def ffmpeg(*args):
+              subprocess.run([ff, '-y', '-loglevel', 'error', *args], check=True)
+          # silent H.264 with faststart, so it starts playing before it has fully downloaded
+          for height, crf in ((1080, 27), (720, 28)):
+              out = f'assets/hero-{height}.mp4'
+              ffmpeg('-ss', str(start), '-t', str(dur), '-i', '/tmp/src.mp4', '-an',
+                     '-vf', f'scale=-2:{height}:flags=lanczos,fps=30',
+                     '-c:v', 'libx264', '-preset', 'slow', '-crf', str(crf),
+                     '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out)
+              print(out, os.path.getsize(out) // 1024, 'KB')
+          # poster = the first frame: shown until the video plays, and instead of it for reduced motion
+          ffmpeg('-ss', str(start), '-i', '/tmp/src.mp4', '-frames:v', '1',
+                 '-vf', 'scale=-2:1080:flags=lanczos', '-q:v', '4', 'assets/hero-poster.jpg')
+          print('assets/hero-poster.jpg', os.path.getsize('assets/hero-poster.jpg') // 1024, 'KB')
+          open('assets/hero-video-source.txt', 'w').write(f'{url}\nstart={start} duration={dur}\n')
+          PY
+
       - name: Commit
+        if: ${{ inputs.manifest != '' || inputs.video_url != '' }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/*.jpg
+          git add assets/
           git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
-          git commit -m "Add site photos from Canva export"
+          git commit -m "Add site media to assets"
+          git pull --rebase
           git push
