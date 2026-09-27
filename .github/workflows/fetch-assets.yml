@@ -14,7 +14,7 @@ on:
         description: 'JSON object: {"hero-beach": "https://export-download.canva.com/…", …}'
         required: false
       video_search:
-        description: 'Keyword to list Mixkit clips for (log only)'
+        description: 'Keywords, comma-separated, to list Mixkit clips for (log only)'
         required: false
       video_url:
         description: 'Clip URL (assets.mixkit.co / videos.pexels.com) to encode as the hero video'
@@ -74,24 +74,22 @@ jobs:
           QUERY: ${{ inputs.video_search }}
         run: |
           python - <<'PY'
-          import html, os, re, urllib.request
-          slug = re.sub(r'[^a-z0-9]+', '-', os.environ['QUERY'].lower()).strip('-')
-          for page in (f'https://mixkit.co/free-stock-video/{slug}/', f'https://mixkit.co/free-stock-video/{slug}/?page=2'):
-              req = urllib.request.Request(page, headers={'User-Agent': 'Mozilla/5.0'})
-              try:
-                  src = urllib.request.urlopen(req, timeout=30).read().decode('utf-8', 'replace')
-              except Exception as e:
-                  print(f'{page}: {e}'); continue
-              print(f'== {page} ({len(src)} bytes)')
+          import os, re, urllib.request
+          # Mixkit item links read /free-stock-video/<description>-<id>/, so the slug doubles as a title
+          for kw in os.environ['QUERY'].split(','):
+              slug = re.sub(r'[^a-z0-9]+', '-', kw.lower()).strip('-')
               seen = set()
-              for m in re.finditer(r'assets\.mixkit\.co/videos/(\d+)/\1-\d+\.mp4', src):
-                  vid = m.group(1)
-                  if vid in seen: continue
-                  seen.add(vid)
-                  near = src[max(0, m.start() - 3000):m.end() + 3000]
-                  t = re.search(r'item-grid-card__title[^>]*>\s*([^<]+)<', near)
-                  title = html.unescape(t.group(1).strip()) if t else '?'
-                  print(f'{vid}\t{title}\thttps://assets.mixkit.co/videos/{vid}/{vid}-1080.mp4')
+              for page in (f'https://mixkit.co/free-stock-video/{slug}/', f'https://mixkit.co/free-stock-video/{slug}/?page=2'):
+                  req = urllib.request.Request(page, headers={'User-Agent': 'Mozilla/5.0'})
+                  try:
+                      src = urllib.request.urlopen(req, timeout=30).read().decode('utf-8', 'replace')
+                  except Exception as e:
+                      print(f'{page}: {e}'); continue
+                  print(f'== {page}')
+                  for title, vid in re.findall(r'href="/free-stock-video/([a-z0-9-]+)-(\d+)/"', src):
+                      if vid in seen: continue
+                      seen.add(vid)
+                      print(f'{vid}\t{title}')
           PY
 
       - name: Encode hero video
