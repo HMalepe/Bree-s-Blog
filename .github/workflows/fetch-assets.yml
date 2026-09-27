@@ -2,8 +2,9 @@
 # Run manually (Actions tab or API) with any of:
 #   manifest     = JSON {"file-name": "https://…canva…"}: photos, optimised to JPG
 #   video_search = a keyword ("ocean waves"): lists free Mixkit clips in the job log only
-#   video_url    = a clip URL (assets.mixkit.co / videos.pexels.com): trimmed and encoded to
-#                  assets/hero-1080.mp4, hero-720.mp4 and hero-poster.jpg (the hero background)
+#   video_url    = clip URL(s), comma-separated (assets.mixkit.co / videos.pexels.com), each trimmed
+#                  and encoded to assets/<name>.mp4 + assets/<name>-poster.jpg, with <name> taken
+#                  from video_name (same order). The hero uses hero-wide (landscape) and hero-tall (portrait).
 # Mixkit and Pexels clips are free for commercial use with no attribution required.
 name: Fetch assets
 
@@ -17,8 +18,12 @@ on:
         description: 'Keywords, comma-separated, to list Mixkit clips for (log only)'
         required: false
       video_url:
-        description: 'Clip URL (assets.mixkit.co / videos.pexels.com) to encode as the hero video'
+        description: 'Clip URL(s), comma-separated (assets.mixkit.co / videos.pexels.com)'
         required: false
+      video_name:
+        description: 'Output name(s) for each clip, comma-separated (e.g. hero-wide,hero-tall)'
+        required: false
+        default: 'hero-wide'
       video_start:
         description: 'Seconds to skip at the start of the clip'
         required: false
@@ -96,41 +101,47 @@ jobs:
         if: ${{ inputs.video_url != '' }}
         env:
           URL: ${{ inputs.video_url }}
+          NAME: ${{ inputs.video_name }}
           START: ${{ inputs.video_start }}
           DURATION: ${{ inputs.video_duration }}
         run: |
           python - <<'PY'
-          import os, subprocess, urllib.request
+          import os, re, subprocess, urllib.request
           from urllib.parse import urlparse
           import imageio_ffmpeg
           ff = imageio_ffmpeg.get_ffmpeg_exe()
-          url = os.environ['URL']
-          host = urlparse(url).hostname or ''
-          if urlparse(url).scheme != 'https' or host not in ('assets.mixkit.co', 'videos.pexels.com'):
-              raise SystemExit(f'refusing video URL from {host!r}')
+          urls = [u.strip() for u in os.environ['URL'].split(',') if u.strip()]
+          names = [n.strip() for n in (os.environ.get('NAME') or 'hero-wide').split(',')]
+          if len(names) != len(urls):
+              raise SystemExit('video_name needs one name per video_url')
           start = float(os.environ.get('START') or 0)
           dur = float(os.environ.get('DURATION') or 12)
           if not (0 <= start <= 120 and 3 <= dur <= 30):
               raise SystemExit('video_start / video_duration out of range')
-          req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-          open('/tmp/src.mp4', 'wb').write(urllib.request.urlopen(req, timeout=120).read())
-          print('source', os.path.getsize('/tmp/src.mp4') // 1024, 'KB')
 
           def ffmpeg(*args):
               subprocess.run([ff, '-y', '-loglevel', 'error', *args], check=True)
-          # silent H.264 with faststart, so it starts playing before it has fully downloaded
-          for height, crf in ((1080, 27), (720, 28)):
-              out = f'assets/hero-{height}.mp4'
+          log = []
+          for url, name in zip(urls, names):
+              host = urlparse(url).hostname or ''
+              if urlparse(url).scheme != 'https' or host not in ('assets.mixkit.co', 'videos.pexels.com'):
+                  raise SystemExit(f'refusing video URL from {host!r}')
+              if not re.fullmatch(r'[a-z0-9-]+', name):
+                  raise SystemExit(f'bad video name: {name!r}')
+              req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+              open('/tmp/src.mp4', 'wb').write(urllib.request.urlopen(req, timeout=120).read())
+              # short side 1080 either way: 1920x1080 landscape, 1080x1920 (or 608x1080) portrait.
+              # Silent H.264 with faststart, so it starts playing before it has fully downloaded.
+              scale = "scale='if(gt(iw,ih),-2,min(1080,iw))':'if(gt(iw,ih),min(1080,ih),-2)':flags=lanczos"
               ffmpeg('-ss', str(start), '-t', str(dur), '-i', '/tmp/src.mp4', '-an',
-                     '-vf', f'scale=-2:{height}:flags=lanczos,fps=30',
-                     '-c:v', 'libx264', '-preset', 'slow', '-crf', str(crf),
-                     '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out)
-              print(out, os.path.getsize(out) // 1024, 'KB')
-          # poster = the first frame: shown until the video plays, and instead of it for reduced motion
-          ffmpeg('-ss', str(start), '-i', '/tmp/src.mp4', '-frames:v', '1',
-                 '-vf', 'scale=-2:1080:flags=lanczos', '-q:v', '4', 'assets/hero-poster.jpg')
-          print('assets/hero-poster.jpg', os.path.getsize('assets/hero-poster.jpg') // 1024, 'KB')
-          open('assets/hero-video-source.txt', 'w').write(f'{url}\nstart={start} duration={dur}\n')
+                     '-vf', f'{scale},fps=30', '-c:v', 'libx264', '-preset', 'slow', '-crf', '27',
+                     '-pix_fmt', 'yuv420p', '-movflags', '+faststart', f'assets/{name}.mp4')
+              # poster = the first frame: shown until the video plays, and instead of it for reduced motion
+              ffmpeg('-ss', str(start), '-i', '/tmp/src.mp4', '-frames:v', '1', '-vf', scale,
+                     '-q:v', '4', f'assets/{name}-poster.jpg')
+              print(name, os.path.getsize(f'assets/{name}.mp4') // 1024, 'KB', url)
+              log.append(f'{name}: {url} start={start} duration={dur}')
+          open('assets/video-sources.txt', 'a').write('\n'.join(log) + '\n')
           PY
 
       - name: Commit

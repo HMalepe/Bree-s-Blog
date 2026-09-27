@@ -47,6 +47,25 @@
     e.target.reset();
   });
 
+  // Hero video: a landscape clip for landscape screens, a portrait one for phones. Its first
+  // frame (<clip>-poster.jpg) is the .ph background, so the loader waits on the right image.
+  // It plays only with motion allowed, and pauses while off screen to save battery.
+  const heroVideo = $('.hero-video');
+  if (heroVideo) {
+    const clip = heroVideo.dataset[matchMedia('(orientation: portrait)').matches ? 'tall' : 'wide'];
+    const poster = clip.replace(/\.mp4$/, '-poster.jpg');
+    heroVideo.parentElement.style.backgroundImage = `url('${poster}'),var(--grad)`;
+    heroVideo.poster = poster;
+    if (!reduce) { heroVideo.src = clip; heroVideo.preload = 'auto'; }
+  }
+  if (heroVideo && !reduce) {
+    heroVideo.addEventListener('playing', () => heroVideo.classList.add('is-playing'), { once: true });
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) heroVideo.play().catch(() => {});   // autoplay blocked: poster stays
+      else heroVideo.pause();
+    }).observe(heroVideo);
+  }
+
   if (!hasGSAP || reduce) {           // readable, static version
     root.classList.add('static');
     return;
