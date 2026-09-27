@@ -7,7 +7,7 @@
 
 /* ---------- TOKENS (re-skin the whole site from here) ---------- */
 :root{
-  /* Palette: "Salt / Sun / Sea" moodboard — cobalt sky, ocean, sea glass, sand, hibiscus */
+  /* Palette: "Salt / Sun / Sea" moodboard — cobalt sky, ocean, leaf green, sand, hibiscus */
   --bg:#F6F4EE;          /* salt-white (the SALT SUN SEA card) */
   --paper:#FFFFFF;
   --ink:#0F1E30;         /* deep-water navy */
@@ -17,7 +17,7 @@
   --cobalt-deep:#07336E; /* footer */
   --sky:#6AA9EC;
   --ocean:#0F7BA0;       /* flat panels (gallery → principles) */
-  --seaglass:#17998A;
+  --leaf:#2DB34A;        /* vineyard green: decorative lines, free tags, the newsletter dot */
   --sand:#CFA05C;        /* hairlines, orbit, frame */
   --sand-pale:#EADCC4;
   --hibiscus:#D01A55;    /* accent: labels, italic emphasis (AA on --bg) */
@@ -125,7 +125,7 @@ html:not(.js) .loader,.static .loader{display:none}
 .blurb{max-width:46ch;color:var(--muted);margin-top:28px;font-size:17px}
 .orbit{position:relative;height:clamp(1000px,140vw,1500px);margin-top:40px}
 .orbit svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.orbit path{fill:none;stroke:var(--sand);stroke-width:2;vector-effect:non-scaling-stroke}
+.orbit path{fill:none;stroke:var(--leaf);stroke-width:2;vector-effect:non-scaling-stroke}
 .bubble{position:absolute;display:flex;align-items:center;gap:clamp(18px,3vw,44px)}
 .bubble.rev{flex-direction:row-reverse;text-align:right}
 .bubble-media{position:relative;width:clamp(150px,20vw,270px);aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 26px 60px -24px color-mix(in srgb,var(--cobalt-deep) 50%,transparent);flex:none}
@@ -135,7 +135,7 @@ html:not(.js) .loader,.static .loader{display:none}
 .bubble-label small{font-size:13px;letter-spacing:.02em;opacity:.9}
 .bubble-label em{font-family:var(--serif);font-size:clamp(20px,2.2vw,30px);line-height:1.1}
 .bubble-side{font-family:var(--serif);font-weight:400;color:var(--cobalt);font-size:clamp(22px,2.6vw,38px);line-height:1.12;max-width:12ch;letter-spacing:-.01em;
-  position:relative;background:var(--bg);padding:.12em .3em}  /* page-coloured backing: the sand curve passes behind labels instead of striking through them */
+  position:relative;background:var(--bg);padding:.12em .3em}  /* page-coloured backing: the green curve passes behind labels instead of striking through them */
 .b1{top:2%;right:4%}.b1{flex-direction:row-reverse;text-align:right}
 .b2{top:28%;left:3%}.b2{flex-direction:row;text-align:left}
 .b3{top:52%;right:7%}.b3{flex-direction:row-reverse;text-align:right}
@@ -221,6 +221,7 @@ html:not(.js) .loader,.static .loader{display:none}
 .quiz{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(22px,2.6vw,34px);display:flex;flex-direction:column;gap:18px;min-height:320px;transition:box-shadow .5s;transform-style:preserve-3d}
 .quiz:hover{box-shadow:0 30px 60px -30px color-mix(in srgb,var(--cobalt) 35%,transparent)}
 .quiz .tag{align-self:flex-start;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:99px;border:1px solid var(--line)}
+.quiz .tag:not(.paid){background:var(--leaf);color:var(--ink);border-color:var(--leaf)}
 .quiz .tag.paid{background:var(--cobalt);color:var(--bg);border-color:var(--cobalt)}
 .quiz h3{font-family:var(--serif);font-weight:400;font-size:clamp(22px,2.2vw,30px);line-height:1.15;letter-spacing:-.02em}
 .quiz p{color:var(--muted);font-size:15px;flex:1}
@@ -240,7 +241,7 @@ html:not(.js) .loader,.static .loader{display:none}
 /* ---------- 10. NEWSLETTER ---------- */
 .newsletter{background:linear-gradient(180deg,var(--foam),var(--sand-pale));color:var(--cobalt);padding:clamp(100px,14vw,200px) var(--pad)}
 .news{margin:0 auto;width:min(100%,520px)}
-.news-dot{display:block;width:12px;height:12px;border-radius:50%;background:currentColor;margin:0 auto 30px;animation:pulse 2.4s ease-in-out infinite}
+.news-dot{display:block;width:12px;height:12px;border-radius:50%;background:var(--leaf);margin:0 auto 30px;animation:pulse 2.4s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(.55);opacity:.5}}
 .news h2{font-family:var(--serif);font-weight:400;font-size:clamp(32px,4.2vw,56px);line-height:1.08;letter-spacing:-.02em}
 .news h2 em{display:block;padding-left:1.4em}

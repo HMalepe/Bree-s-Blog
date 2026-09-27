@@ -34,7 +34,7 @@ The page always opens at the top (`history.scrollRestoration = 'manual'` inline 
 5. On scroll: the bg drifts `yPercent 14`. The text goes to `y -80`, fading to 0.15.
 
 ### 2. About: the orbit
-- The sand SVG path is drawn with `strokeDashoffset L → 0`, scrubbed from `top 75%` to `bottom 60%`. `L` is the path's **on-screen** length, measured in JS and re-measured on refresh. Don't use `pathLength=1` here: the SVG is stretched (`preserveAspectRatio="none"`) with `vector-effect: non-scaling-stroke`, so Chrome lays dashes out in screen pixels and a unit-length dash never reaches the end of the path.
+- The leaf-green SVG path is drawn with `strokeDashoffset L → 0`, scrubbed from `top 75%` to `bottom 60%`. `L` is the path's **on-screen** length, measured in JS and re-measured on refresh. Don't use `pathLength=1` here: the SVG is stretched (`preserveAspectRatio="none"`) with `vector-effect: non-scaling-stroke`, so Chrome lays dashes out in screen pixels and a unit-length dash never reaches the end of the path.
 - Each bubble runs a scrubbed timeline from `top 100%` to `top 40%`:
   - the circle goes from `scale .3, opacity 0` to 1
   - each bubble holds two photos. The scenic outer photo settles from `scale 1.25` to 1, then the portrait rises over it as an arch, `circle(0% at 50% 100%)` to `circle(101%)`, which covers the bubble completely
