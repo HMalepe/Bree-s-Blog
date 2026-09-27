@@ -365,37 +365,13 @@
   });
 
   /* ------------------------------------------------------------------
-     10. CTA — arch opens, cards float + fade, bg fades to pale,
-         newsletter ink shifts from cream to cobalt
+     PARALLAX FLOAT — [data-speed] drifts across the viewport (About bubbles)
      ------------------------------------------------------------------ */
-  // The arch opens through clip-path only: animating margin + border-radius
-  // re-laid-out and repainted the whole 250vh arch on every frame.
-  const arch = $('.cta-arch');
-  const archClip = (side, r) => `inset(0% ${side}% 0% ${side}% round 50% 50% 0% 0% / ${r}px ${r}px 0px 0px)`;
-  gsap.fromTo(arch,
-    { clipPath: () => archClip(5, Math.round(Math.min(vw() * .3, 380))) },
-    { clipPath: archClip(0, 0), ease: 'none',
-      scrollTrigger: { trigger: arch, start: 'top 100%', end: 'top 5%', scrub: true, invalidateOnRefresh: true } });
-  gsap.fromTo('.cta-bg .ph', { scale: 1.35 }, { scale: 1.1, ease: 'none',
-    scrollTrigger: { trigger: arch, start: 'top bottom', end: 'bottom bottom', scrub: true } });
-
   $$('[data-speed]').forEach(el => {
     const speed = parseFloat(el.dataset.speed);
-    const tl = gsap.timeline({ defaults: { ease: 'none' },
+    gsap.fromTo(el, { y: () => vh() * speed * .5 }, { y: () => -vh() * speed * .5, ease: 'none',
       scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true } });
-    tl.fromTo(el, { y: () => vh() * speed * .5 }, { y: () => -vh() * speed * .5, duration: 1 }, 0);
-    if (el.matches('.float-card')) {
-      tl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: .25 }, 0)
-        .to(el, { autoAlpha: 0, duration: .25 }, .75);
-    }
   });
-
-  gsap.timeline({ defaults: { ease: 'none' },
-    scrollTrigger: { trigger: '.news', start: 'top 85%', end: 'top 25%', scrub: true } })
-    .to('.cta-pale', { opacity: 1 }, 0)
-    // on .cta-arch so the float-card labels follow the ink too
-    .fromTo('.cta-arch', { '--news-ink': token('--cream'), '--label-shadow': token('--shadow') },
-                         { '--news-ink': token('--cobalt'), '--label-shadow': token('--shadow').replace(/[\d.]+\)$/, '0)') }, 0);
 
   /* ------------------------------------------------------------------
      11. FOOTER — wordmark rises out of the bottom edge

@@ -22,7 +22,7 @@ Source of truth for every animation in `js/main.js`. Hand this file to an AI IDE
    - stagger 0.12 between cards
 4. **Image drift**: the image inside `.media` is 118% tall. `yPercent -6 → 6` is scrubbed across the viewport.
 5. **Soft exit**: a card goes to `autoAlpha .2, y -30` as its bottom passes from 30% of the viewport to -5% (scrubbed). Images fade *out* as well as in.
-6. **Parallax float** (`[data-speed]`): `y` goes from `+vh*speed/2` to `-vh*speed/2` across the viewport. `.float-card` also fades in over the first 25% and out over the last 25%.
+6. **Parallax float** (`[data-speed]`): `y` goes from `+vh*speed/2` to `-vh*speed/2` across the viewport. Used by the About bubbles.
 
 ## Section choreography
 ### 0. Loader and hero
@@ -71,14 +71,8 @@ Each row: the rule draws `scaleX 0 → 1` (1.4s), then the number, key and value
 ### 8. Quizzes
 The cards rise 70px, stagger 0.12. On hover-capable devices they tilt toward the pointer (±5°, `gsap.quickTo`).
 
-### 10. CTA arch and newsletter
-- The arch opens through `clip-path` only: `inset(0 5% 0 5% round 50% 50% 0 0 / R R 0 0)` → `inset(0 round 0)`, R = min(30vw, 380px), scrubbed as it enters. Don't animate margin or border-radius here: that re-lays-out and repaints the 250vh arch on every frame.
-- A sticky blurred bg stays behind the content. The blur is baked into `assets/capetown-blur.jpg` (320px, Gaussian ≈ `blur(18px)` at 1280px). A live `filter: blur()` on a full-screen layer cost 50–100ms frames while scrubbing. Its scale goes from 1.35 to 1.1 across the section. `.cta-arch` must use `overflow:clip`, not `hidden`: `hidden` makes the arch its own scroll container, so the sticky bg would stick to the arch and only cover its first screen.
-- Floating cards use the parallax float primitive with different speeds. The centre card has a CSS blob that morphs its border radius on a 9s loop.
-- Newsletter (scrubbed from `top 85%` to `top 25%`):
-  - the pale layer fades in over the warm bg
-  - `--news-ink` tweens from cream to cobalt **on `.cta-arch`**, so the newsletter text and the float-card labels follow the background (`.cta-card` stays cream on its ocean panel)
-  - the dot pulses on a CSS loop
+### 10. Newsletter
+No scroll scene: a flat section on a foam → sand gradient with cobalt ink. The heading uses the shared split-text reveal, the form the shared fade-up, and the dot pulses on a 2.4s CSS loop.
 
 ### 11. Footer
 The giant "bree." wordmark goes from `yPercent 100` to 0 as the footer scrolls in. It rises out of the bottom edge.

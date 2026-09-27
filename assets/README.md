@@ -13,13 +13,12 @@ workflow with a manifest of fresh Canva export links. If a file goes missing, it
 | `savanna-hat.jpg` | 4:5 | [MAHWNRLLyjc](https://www.canva.com/M/MAHWNRLLyjc) | featured tall card · gallery |
 | `serum-ritual.jpg` | 1:1 | [MAHWNejLeJI](https://www.canva.com/M/MAHWNejLeJI) | bubble "Health Notes" · "Supplements" card · "Cabinet audit" note · gallery · "Pharmacy" step |
 | `cafe-zanzibar.jpg` | 3:2 | [MAHWNXFYAkI](https://www.canva.com/M/MAHWNXFYAkI) | "9-to-6" card · "Slow mornings" note · gallery · "Quizzes" step |
-| `sunscreen-smile.jpg` | 1:1 | [MAHWNY6aCjA](https://www.canva.com/M/MAHWNY6aCjA) | bubble "Myths" · "Sunscreen, decoded" card + float card · gallery · "Explainers" step |
+| `sunscreen-smile.jpg` | 1:1 | [MAHWNY6aCjA](https://www.canva.com/M/MAHWNY6aCjA) | bubble "Myths" · "Sunscreen, decoded" card · gallery · "Explainers" step |
 | `desert-dunes.jpg` | 3:4 | [MAHWNSW_YA4](https://www.canva.com/M/MAHWNSW_YA4) | gallery |
-| `road-trip.jpg` | 3:2 | [MAHWNQzw0zE](https://www.canva.com/M/MAHWNQzw0zE) | "Finishing the course" note + float card · gallery · "Content" step |
+| `road-trip.jpg` | 3:2 | [MAHWNQzw0zE](https://www.canva.com/M/MAHWNQzw0zE) | "Finishing the course" note · gallery · "Content" step |
 | `flatlay.jpg` | 1:1 | [MAHWNerWVTk](https://www.canva.com/M/MAHWNerWVTk) | "Natural" card · "Reading a label" note · gallery · "Collaborations" step |
-| `pool-sunset.jpg` | 4:5 | [MAHWNUrUf_0](https://www.canva.com/M/MAHWNUrUf_0) | bubble "Rituals" · "Sunday reset" card + float card · gallery |
+| `pool-sunset.jpg` | 4:5 | [MAHWNUrUf_0](https://www.canva.com/M/MAHWNUrUf_0) | bubble "Rituals" · "Sunday reset" card · gallery |
 | `capetown.jpg` | 16:9 | [MAHWNYaoW_M](https://www.canva.com/M/MAHWNYaoW_M) | bubble "Myths" outer · gallery |
-| `capetown-blur.jpg` | 16:9 | derived | CTA arch background: 320px, blur and saturation baked in (4.5 KB). Regenerate if `capetown.jpg` changes |
 | `wheat-laugh.jpg` | 3:4 | [MAHWNTImaOE](https://www.canva.com/M/MAHWNTImaOE) | bubble "Quizzes" · gallery |
 
 The four About bubbles each have a scenic outer photo (beach, Cape Town, savanna, dunes). The portrait rises over it as an arch.

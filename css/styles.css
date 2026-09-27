@@ -24,7 +24,6 @@
   --lemon:#F6E04B;       /* "OCEAN AIR" yellow: pops on blue */
   --foam:#D8EAF8;
   --cream:#FFF9EF;
-  --shadow:rgba(6,28,58,.55); /* navy text-shadow behind labels on photos */
   --serif:"Libre Baskerville", Georgia, serif;
   --sans:"Inter Tight", system-ui, sans-serif;
   --pad:clamp(16px, 3.2vw, 44px);
@@ -234,32 +233,9 @@ html:not(.js) .loader,.static .loader{display:none}
 .faq details[open] summary::after{transform:rotate(45deg)}
 .faq details p{color:var(--muted);max-width:62ch;padding-bottom:26px}
 
-/* ---------- 10. CTA ARCH + NEWSLETTER ---------- */
-.cta{padding-top:clamp(80px,10vw,150px);border-top:1px solid var(--line)}
-.cta-head{font-family:var(--serif);font-weight:400;color:var(--cobalt);font-size:clamp(28px,3.6vw,52px);line-height:1.1;letter-spacing:-.02em;text-align:right;padding:0 var(--pad);margin-bottom:clamp(50px,7vw,100px);max-width:20ch;margin-left:auto}
-.cta-head em{display:block}
-.cta-arch{--news-ink:var(--cream);position:relative;overflow:hidden;overflow:clip;min-height:250vh;color:var(--news-ink);isolation:isolate}
-.cta-bg{position:sticky;top:0;height:100vh;height:100svh;margin-bottom:-100vh;margin-bottom:-100svh;z-index:-1;overflow:hidden}
-/* The blur is baked into assets/capetown-blur.jpg (320px, Gaussian ≈ blur(18px) at 1280px, saturate 1.1).
-   A live filter:blur on a full-screen layer cost 50–100ms frames while scrubbing. */
-.cta-bg .ph{position:absolute;inset:0;border-radius:0;transform:scale(1.15);will-change:transform}
-.cta-pale{position:absolute;inset:0;background:linear-gradient(180deg,var(--foam),var(--sand-pale));opacity:0;will-change:opacity}
-.float-card{position:absolute;width:clamp(130px,15vw,200px);display:grid;gap:14px;font-size:15px}
-/* cream labels sit on bright sky: a soft shadow keeps them legible; main.js fades it out as the ink turns cobalt */
-.float-card span{text-shadow:0 1px 12px var(--label-shadow, var(--shadow))}
-.float-card .ph{aspect-ratio:4/3}
-.fc1{right:var(--pad);top:14vh}
-.fc2{left:var(--pad);top:95vh}
-.fc3{right:calc(var(--pad) + 4vw);top:140vh}
-.cta-card{position:relative;color:var(--cream);margin:48vh auto 0;width:min(86%,380px);background:color-mix(in srgb,var(--ocean) 82%,transparent);padding:26px 22px 0;border-radius:2px;overflow:hidden}
-.cta-card h3{font-family:var(--serif);font-weight:400;font-size:clamp(24px,2.4vw,32px);line-height:1.12;letter-spacing:-.02em}
-.cta-card .link{margin-top:16px}
-.blob{width:82%;aspect-ratio:1.8;margin:30px auto -10px;background:color-mix(in srgb,var(--cobalt-deep) 55%,transparent);animation:blob 9s ease-in-out infinite}
-@keyframes blob{
-  0%,100%{border-radius:42% 58% 55% 45% / 45% 40% 60% 55%}
-  33%{border-radius:60% 40% 38% 62% / 55% 60% 40% 45%}
-  66%{border-radius:48% 52% 64% 36% / 38% 52% 48% 62%}}
-.news{position:relative;margin:clamp(60vh,70vh,80vh) auto 0;width:min(100% - 2*var(--pad),520px);padding-bottom:18vh;color:var(--news-ink)}
+/* ---------- 10. NEWSLETTER ---------- */
+.newsletter{background:linear-gradient(180deg,var(--foam),var(--sand-pale));color:var(--cobalt);padding:clamp(100px,14vw,200px) var(--pad)}
+.news{margin:0 auto;width:min(100%,520px)}
 .news-dot{display:block;width:12px;height:12px;border-radius:50%;background:currentColor;margin:0 auto 30px;animation:pulse 2.4s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(.55);opacity:.5}}
 .news h2{font-family:var(--serif);font-weight:400;font-size:clamp(32px,4.2vw,56px);line-height:1.08;letter-spacing:-.02em}
@@ -267,6 +243,8 @@ html:not(.js) .loader,.static .loader{display:none}
 .news form{display:flex;border-bottom:1.5px solid currentColor;margin-top:34px}
 .news input{flex:1;border:0;background:none;font:inherit;font-size:17px;padding:14px 0;outline:none;color:inherit;min-width:0}
 .news input::placeholder{color:currentColor;opacity:.6}
+/* browser autofill paints its own pale-blue box; keep the field on the section's gradient */
+.news input:-webkit-autofill{-webkit-text-fill-color:var(--cobalt);-webkit-box-shadow:0 0 0 40px var(--sand-pale) inset;transition:background-color 9999s}
 .news button{border:0;background:none;font:inherit;font-size:22px;cursor:pointer;color:inherit;padding-left:14px;transition:transform .4s var(--ease-out)}
 .news button:hover{transform:translateX(6px)}
 .news small{display:block;margin-top:12px;min-height:1.4em;opacity:.8}
@@ -292,8 +270,4 @@ footer .bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wra
 .static .gs-frame,.static .gs-menu,.static .gs-tint{display:none}
 .static .gs-full{position:relative;visibility:visible;clip-path:none;margin-top:60px}
 .static .do-pin{height:auto;padding:clamp(80px,10vw,140px) 0 60px}
-.static .cta-arch{min-height:auto;padding-bottom:40px}
-.static .float-card{display:none}
-.static .cta-card{margin-top:80px}
-.static .news{margin-top:120px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

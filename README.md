@@ -43,7 +43,7 @@ Keep the `url()` inline: a relative `url()` passed through a CSS custom property
 against `css/`, not the page.
 
 ## Before launch
-- Replace `hello@example.com` (3 places)
+- Replace `hello@example.com` (footer email link)
 - Wire the newsletter form in `main.js` (look for `TODO`)
 - Replace sample notes/quizzes with real content
 - Add real `<meta property="og:*">` tags + favicon
