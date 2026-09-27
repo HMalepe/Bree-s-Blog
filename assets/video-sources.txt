@@ -1,4 +1,1 @@
 hero-tall: https://assets.mixkit.co/videos/51500/51500-1080.mp4 start=0.0 duration=12.0
-cand-44400: https://assets.mixkit.co/videos/44400/44400-1080.mp4 start=0.0 duration=12.0
-cand-2091: https://assets.mixkit.co/videos/2091/2091-1080.mp4 start=0.0 duration=12.0
-cand-44387: https://assets.mixkit.co/videos/44387/44387-1080.mp4 start=0.0 duration=12.0
