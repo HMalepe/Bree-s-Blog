@@ -47,16 +47,20 @@
     e.target.reset();
   });
 
-  // Hero video: a landscape clip for landscape screens, a portrait one for phones. Its first
-  // frame (<clip>-poster.jpg) is the .ph background, so the loader waits on the right image.
-  // It plays only with motion allowed, and pauses while off screen to save battery.
+  // Hero video: a landscape clip for landscape screens, a portrait one for phones, as VP9 WebM
+  // where supported (smaller) or H.264 MP4. Its first frame (<clip>-poster.jpg) is the .ph
+  // background, so the loader waits on the right image. It plays only with motion allowed,
+  // and pauses while off screen to save battery.
   const heroVideo = $('.hero-video');
   if (heroVideo) {
     const clip = heroVideo.dataset[matchMedia('(orientation: portrait)').matches ? 'tall' : 'wide'];
-    const poster = clip.replace(/\.mp4$/, '-poster.jpg');
+    const poster = `${clip}-poster.jpg`;
     heroVideo.parentElement.style.backgroundImage = `url('${poster}'),var(--grad)`;
     heroVideo.poster = poster;
-    if (!reduce) { heroVideo.src = clip; heroVideo.preload = 'auto'; }
+    if (!reduce) {
+      heroVideo.src = clip + (heroVideo.canPlayType('video/webm; codecs="vp9"') ? '.webm' : '.mp4');
+      heroVideo.preload = 'auto';
+    }
   }
   if (heroVideo && !reduce) {
     heroVideo.addEventListener('playing', () => heroVideo.classList.add('is-playing'), { once: true });

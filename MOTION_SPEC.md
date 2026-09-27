@@ -29,7 +29,7 @@ Source of truth for every animation in `js/main.js`. Hand this file to an AI IDE
 The page always opens at the top (`history.scrollRestoration = 'manual'` inline in `<head>`), and scrolling stays locked (`lenis.stop()`) until the curtain has lifted. The intro starts once fonts **and** the hero poster (the chosen clip's first frame, `hero-wide-poster.jpg` or `hero-tall-poster.jpg`) are decoded, capped at 3.5s. A `#hash` link glides to its section after the curtain lifts.
 1. The "bree." word lifts and fades (0.7s, `power3.in`).
 2. The cobalt curtain wipes up (`clipPath inset(0 0 100% 0)`, 1.1s, `expo.inOut`).
-3. The hero bg goes from `scale 1.35` to 1 (2.4s). It overlaps step 2 by 0.75s. The bg is a looping muted video (`.hero-video`: `hero-wide.mp4` on landscape screens, `hero-tall.mp4` on portrait) inside the `.ph`, so it zooms and parallaxes with it. JS starts it (no `autoplay` attribute), fades it in over the poster on its first `playing` event, and pauses it while the hero is off screen. Reduced motion and no-JS keep the still poster.
+3. The hero bg goes from `scale 1.35` to 1 (2.4s). It overlaps step 2 by 0.75s. The bg is a looping muted video (`.hero-video`: `hero-wide` on landscape screens, `hero-tall` on portrait; VP9 WebM where supported, else MP4) inside the `.ph`, so it zooms and parallaxes with it. JS starts it (no `autoplay` attribute), fades it in over the poster on its first `playing` event, and pauses it while the hero is off screen. Reduced motion and no-JS keep the still poster.
 4. Hero title words rise, stagger 0.08. Then the right column fades up.
 5. On scroll: the bg drifts `yPercent 14`. The text goes to `y -80`, fading to 0.15.
 

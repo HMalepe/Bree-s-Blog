@@ -3,7 +3,7 @@
 #   manifest     = JSON {"file-name": "https://…canva…"}: photos, optimised to JPG
 #   video_search = a keyword ("ocean waves"): lists free Mixkit clips in the job log only
 #   video_url    = clip URL(s), comma-separated (assets.mixkit.co / videos.pexels.com), each trimmed
-#                  and encoded to assets/<name>.mp4 + assets/<name>-poster.jpg, with <name> taken
+#                  and encoded to assets/<name>.mp4 + .webm + -poster.jpg, with <name> taken
 #                  from video_name (same order). The hero uses hero-wide (landscape) and hero-tall (portrait).
 # Mixkit and Pexels clips are free for commercial use with no attribution required.
 name: Fetch assets
@@ -161,10 +161,15 @@ jobs:
               ffmpeg('-ss', str(start), '-t', str(dur), '-i', '/tmp/src.mp4', '-an',
                      '-vf', f'{scale},fps=30', '-c:v', 'libx264', '-preset', 'slow', '-crf', '27',
                      '-pix_fmt', 'yuv420p', '-movflags', '+faststart', f'assets/{name}.mp4')
+              # VP9 WebM: ~45% smaller; main.js prefers it wherever the browser can play it
+              ffmpeg('-ss', str(start), '-t', str(dur), '-i', '/tmp/src.mp4', '-an',
+                     '-vf', f'{scale},fps=30', '-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '38',
+                     '-row-mt', '1', '-deadline', 'good', '-cpu-used', '2', f'assets/{name}.webm')
               # poster = the first frame: shown until the video plays, and instead of it for reduced motion
               ffmpeg('-ss', str(start), '-i', '/tmp/src.mp4', '-frames:v', '1', '-vf', scale,
                      '-q:v', '5', f'assets/{name}-poster.jpg')
-              print(name, os.path.getsize(f'assets/{name}.mp4') // 1024, 'KB', url)
+              print(name, os.path.getsize(f'assets/{name}.mp4') // 1024, 'KB mp4,',
+                    os.path.getsize(f'assets/{name}.webm') // 1024, 'KB webm', url)
               log.append(f'{name}: {url} start={start} duration={dur}')
           if not log:
               raise SystemExit('no clip could be fetched')

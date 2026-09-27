@@ -24,7 +24,7 @@ back to the gradient.
 
 ## Hero video
 
-`hero-wide.mp4` (landscape screens) and `hero-tall.mp4` (portrait screens) are free Mixkit stock clips, trimmed and
+`hero-wide` (landscape screens) and `hero-tall` (portrait screens) are free Mixkit stock clips, each as VP9 `.webm` (preferred, smaller) and H.264 `.mp4`, trimmed and
 re-encoded by the same workflow (`video_url` input; `video_search` lists candidates in the job log).
 Each `<clip>-poster.jpg` is that clip's first frame: it shows until the video plays, and in place of it for
 reduced-motion and no-JS visitors. `video-sources.txt` records each source clip and trim. main.js picks the clip by screen orientation.

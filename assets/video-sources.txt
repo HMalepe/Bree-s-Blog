@@ -1,2 +1,0 @@
-hero-tall: https://assets.mixkit.co/videos/51500/51500-1080.mp4 start=0.0 duration=12.0
-hero-wide: https://assets.mixkit.co/videos/42495/42495-1080.mp4 start=0.0 duration=12.0
