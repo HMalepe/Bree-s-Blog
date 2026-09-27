@@ -22,19 +22,19 @@ Source of truth for every animation in `js/main.js`. Hand this file to an AI IDE
    - stagger 0.12 between cards
 4. **Image drift**: the image inside `.media` is 118% tall. `yPercent -6 → 6` is scrubbed across the viewport.
 5. **Soft exit**: a card goes to `autoAlpha .2, y -30` as its bottom passes from 30% of the viewport to -5% (scrubbed). Images fade *out* as well as in.
-6. **Parallax float** (`[data-speed]`): `y` goes from `+vh*speed/2` to `-vh*speed/2` across the viewport. `.float-card` also fades in over the first 25% and out over the last 25%.
+6. **Parallax float** (`[data-speed]`): `y` goes from `+vh*speed/2` to `-vh*speed/2` across the viewport. Used by the About bubbles.
 
 ## Section choreography
 ### 0. Loader and hero
-The page always opens at the top (`history.scrollRestoration = 'manual'` inline in `<head>`), and scrolling stays locked (`lenis.stop()`) until the curtain has lifted. The intro starts once fonts **and** the hero photo are decoded, capped at 3.5s. A `#hash` link glides to its section after the curtain lifts.
+The page always opens at the top (`history.scrollRestoration = 'manual'` inline in `<head>`), and scrolling stays locked (`lenis.stop()`) until the curtain has lifted. The intro starts once fonts **and** the hero poster (the chosen clip's first frame, `hero-wide-poster.jpg` or `hero-tall-poster.jpg`) are decoded, capped at 3.5s. A `#hash` link glides to its section after the curtain lifts.
 1. The "bree." word lifts and fades (0.7s, `power3.in`).
-2. The wine curtain wipes up (`clipPath inset(0 0 100% 0)`, 1.1s, `expo.inOut`).
-3. The hero bg goes from `scale 1.35` to 1 (2.4s). It overlaps step 2 by 0.75s.
+2. The cobalt curtain wipes up (`clipPath inset(0 0 100% 0)`, 1.1s, `expo.inOut`).
+3. The hero bg goes from `scale 1.35` to 1 (2.4s). It overlaps step 2 by 0.75s. The bg is a looping muted video (`.hero-video`: `hero-wide` on landscape screens, `hero-tall` on portrait; VP9 WebM where supported, else MP4) inside the `.ph`, so it zooms and parallaxes with it. JS starts it (no `autoplay` attribute), fades it in over the poster on its first `playing` event, and pauses it while the hero is off screen. Reduced motion and no-JS keep the still poster.
 4. Hero title words rise, stagger 0.08. Then the right column fades up.
 5. On scroll: the bg drifts `yPercent 14`. The text goes to `y -80`, fading to 0.15.
 
 ### 2. About: the orbit
-- The gold SVG path is drawn with `strokeDashoffset L → 0`, scrubbed from `top 75%` to `bottom 60%`. `L` is the path's **on-screen** length, measured in JS and re-measured on refresh. Don't use `pathLength=1` here: the SVG is stretched (`preserveAspectRatio="none"`) with `vector-effect: non-scaling-stroke`, so Chrome lays dashes out in screen pixels and a unit-length dash never reaches the end of the path.
+- The leaf-green SVG path is drawn with `strokeDashoffset L → 0`, scrubbed from `top 75%` to `bottom 60%`. `L` is the path's **on-screen** length, measured in JS and re-measured on refresh. Don't use `pathLength=1` here: the SVG is stretched (`preserveAspectRatio="none"`) with `vector-effect: non-scaling-stroke`, so Chrome lays dashes out in screen pixels and a unit-length dash never reaches the end of the path.
 - Each bubble runs a scrubbed timeline from `top 100%` to `top 40%`:
   - the circle goes from `scale .3, opacity 0` to 1
   - each bubble holds two photos. The scenic outer photo settles from `scale 1.25` to 1, then the portrait rises over it as an arch, `circle(0% at 50% 100%)` to `circle(101%)`, which covers the bubble completely
@@ -51,12 +51,12 @@ The section is pinned, and one scrubbed timeline lasts 7 viewport heights. The s
 | a | 0 → 1.3 | Each letter of "Gallery" flies to a random x/y/rotation, blurs 14px and fades. Random stagger |
 | b | 0.5 → 3.7 | Three masonry columns rise from below the fold. Each column has its own `data-shift` offset, so they land at different heights (column parallax). The centre column lands with the focus tile exactly centred |
 | c | 3.6 → 4.6 | Every tile except the focus tile goes to `scale .5, opacity 0`, in random order |
-| d | 4.5 → 5.5 | The gold frame (an SVG rect, sized in px) traces clockwise around the focus tile. The dash length is its measured perimeter `2(w+h)`; CSS keeps it hidden (`stroke-dasharray: 0 100000`) until JS sets it |
-| e | 5.4 → 7.0 | A frosted "right-click" menu pops in (`back.out`). The highlight bar steps down the items, and the last item turns gold |
-| f | 7.35 | The menu and frame fade out, and a gold tint fills the tile |
-| g | 7.9 → 9.1 | The gold panel's `clip-path` expands from the tile's exact rect to full-bleed. Then the Principles heading rises in |
+| d | 4.5 → 5.5 | The sand frame (an SVG rect, sized in px) traces clockwise around the focus tile. The dash length is its measured perimeter `2(w+h)`; CSS keeps it hidden (`stroke-dasharray: 0 100000`) until JS sets it |
+| e | 5.4 → 7.0 | A frosted "right-click" menu pops in (`back.out`). The highlight bar steps down the items, and the last item turns lemon |
+| f | 7.35 | The menu and frame fade out, and an ocean tint fills the tile |
+| g | 7.9 → 9.1 | The ocean panel's `clip-path` expands from the tile's exact rect to full-bleed. Then the Principles heading rises in |
 
-The unpin is seamless because the next section (`.principles`) has the same flat gold background.
+The unpin is seamless because the next section (`.principles`) has the same flat ocean background.
 
 ### 6. Principles
 Each row: the rule draws `scaleX 0 → 1` (1.4s), then the number, key and value rise with a stagger.
@@ -71,14 +71,8 @@ Each row: the rule draws `scaleX 0 → 1` (1.4s), then the number, key and value
 ### 8. Quizzes
 The cards rise 70px, stagger 0.12. On hover-capable devices they tilt toward the pointer (±5°, `gsap.quickTo`).
 
-### 10. CTA arch and newsletter
-- The arch opens through `clip-path` only: `inset(0 5% 0 5% round 50% 50% 0 0 / R R 0 0)` → `inset(0 round 0)`, R = min(30vw, 380px), scrubbed as it enters. Don't animate margin or border-radius here: that re-lays-out and repaints the 250vh arch on every frame.
-- A sticky blurred bg stays behind the content. The blur is baked into `assets/capetown-blur.jpg` (320px, Gaussian ≈ `blur(18px)` at 1280px). A live `filter: blur()` on a full-screen layer cost 50–100ms frames while scrubbing. Its scale goes from 1.35 to 1.1 across the section. `.cta-arch` must use `overflow:clip`, not `hidden`: `hidden` makes the arch its own scroll container, so the sticky bg would stick to the arch and only cover its first screen.
-- Floating cards use the parallax float primitive with different speeds. The centre card has a CSS blob that morphs its border radius on a 9s loop.
-- Newsletter (scrubbed from `top 85%` to `top 25%`):
-  - the pale layer fades in over the warm bg
-  - `--news-ink` tweens from cream to wine **on `.cta-arch`**, so the newsletter text and the float-card labels follow the background (`.cta-card` stays cream on its gold panel)
-  - the dot pulses on a CSS loop
+### 10. Newsletter
+No scroll scene: a flat section on a foam → sand gradient with cobalt ink. The heading uses the shared split-text reveal, the form the shared fade-up, and the dot pulses on a 2.4s CSS loop.
 
 ### 11. Footer
 The giant "bree." wordmark goes from `yPercent 100` to 0 as the footer scrolls in. It rises out of the bottom edge.

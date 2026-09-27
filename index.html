@@ -10,7 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
-<link rel="preload" as="image" href="assets/hero-beach.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="assets/hero-wide-poster.jpg" media="(orientation: landscape)" fetchpriority="high">
+<link rel="preload" as="image" href="assets/hero-tall-poster.jpg" media="(orientation: portrait)" fetchpriority="high">
 </head>
 <body>
 
@@ -33,7 +34,7 @@
   <a href="#notes">Notes</a>
   <a href="#gallery">Gallery</a>
   <a href="#quizzes">Quizzes</a>
-  <a href="#connect">Work with me</a>
+  <a href="#contact">Work with me</a>
   <div class="meta">
     <a href="https://www.tiktok.com/@mokoena_bree" target="_blank" rel="noopener">TikTok</a>
     <a href="https://www.instagram.com/mokoena_bree" target="_blank" rel="noopener">Instagram</a>
@@ -44,7 +45,12 @@
 
 <!-- ============ 1. HERO ============ -->
 <section class="hero">
-  <div class="hero-bg"><div class="ph t1" style="background-image:url('assets/hero-beach.jpg'),var(--grad)"></div></div>
+  <div class="hero-bg"><div class="ph t1" style="background-image:url('assets/hero-wide-poster.jpg'),var(--grad)">
+    <!-- main.js picks the clip (wide = landscape screens, tall = portrait) and starts it;
+         no-JS and reduced-motion visitors keep the still poster -->
+    <video class="hero-video" muted loop playsinline preload="none" aria-hidden="true"
+      data-wide="assets/hero-wide" data-tall="assets/hero-tall"></video>
+  </div></div>
   <h1 class="hero-title" data-split="hero">Bree <span class="l2"><span class="small">behind the</span> Counter</span></h1>
   <div class="hero-right">
     <div data-fade>
@@ -75,7 +81,7 @@
     </svg>
 
     <div class="bubble b1" data-speed="0.08">
-      <div class="bubble-media"><div class="ph t3 bubble-outer" style="background-image:url('assets/hero-beach.jpg'),var(--grad)"></div><div class="ph t2 bubble-inner" style="background-image:url('assets/serum-ritual.jpg'),var(--grad)"></div>
+      <div class="bubble-media"><div class="ph t3 bubble-outer" style="background-image:url('assets/wildflowers.jpg'),var(--grad)"></div><div class="ph t2 bubble-inner" style="background-image:url('assets/serum-ritual.jpg'),var(--grad)"></div>
         <div class="bubble-label"><small>Health</small><em>Notes</em></div></div>
       <h3 class="bubble-side" data-split>Explain it like a friend</h3>
     </div>
@@ -85,12 +91,12 @@
       <h3 class="bubble-side" data-split>Myths, gently busted</h3>
     </div>
     <div class="bubble b3" data-speed="0.1">
-      <div class="bubble-media"><div class="ph t3 bubble-outer" style="background-image:url('assets/savanna-hat.jpg'),var(--grad)"></div><div class="ph t6 bubble-inner" style="background-image:url('assets/wheat-laugh.jpg'),var(--grad)"></div>
+      <div class="bubble-media"><div class="ph t3 bubble-outer" style="background-image:url('assets/vineyard.jpg'),var(--grad)"></div><div class="ph t6 bubble-inner" style="background-image:url('assets/umbrella-laugh.jpg'),var(--grad)"></div>
         <div class="bubble-label"><small>Play</small><em>Quizzes</em></div></div>
       <h3 class="bubble-side" data-split>Test what you know</h3>
     </div>
     <div class="bubble b4 rev" data-speed="-0.05">
-      <div class="bubble-media"><div class="ph t5 bubble-outer" style="background-image:url('assets/desert-dunes.jpg'),var(--grad)"></div><div class="ph t1 bubble-inner" style="background-image:url('assets/pool-sunset.jpg'),var(--grad)"></div>
+      <div class="bubble-media"><div class="ph t5 bubble-outer" style="background-image:url('assets/bougainvillea.jpg'),var(--grad)"></div><div class="ph t1 bubble-inner" style="background-image:url('assets/pool-day.jpg'),var(--grad)"></div>
         <div class="bubble-label"><small>Off duty</small><em>Rituals</em></div></div>
       <h3 class="bubble-side" data-split>Life off the clock</h3>
     </div>
@@ -105,18 +111,18 @@
   </div>
   <div class="feat">
     <a class="card reveal-card" href="#">
-      <div class="media tall"><div class="ph t2" style="background-image:url('assets/savanna-hat.jpg'),var(--grad)"></div></div>
+      <div class="media tall"><div class="ph t2" style="background-image:url('assets/cliff-hat.jpg'),var(--grad)"></div></div>
       <div class="card-text"><div class="row"><span>Health Notes</span><span>6 min read</span></div>
       <h3>What your pharmacist wishes you'd ask before you leave the counter</h3></div>
     </a>
     <div class="stack">
       <a class="card reveal-card" href="#">
-        <div class="media wide"><div class="ph t4" style="background-image:url('assets/flatlay.jpg'),var(--grad)"></div></div>
+        <div class="media wide"><div class="ph t4" style="background-image:url('assets/greenhouse.jpg'),var(--grad)"></div></div>
         <div class="card-text"><div class="row"><span>Myth Check</span><span>4 min read</span></div>
         <h3>"Natural" doesn't mean harmless</h3></div>
       </a>
       <a class="card reveal-card" href="#">
-        <div class="media wide"><div class="ph t5" style="background-image:url('assets/cafe-zanzibar.jpg'),var(--grad)"></div></div>
+        <div class="media wide"><div class="ph t5" style="background-image:url('assets/cafe-harbour.jpg'),var(--grad)"></div></div>
         <div class="card-text"><div class="row"><span>Behind the Counter</span><span>5 min read</span></div>
         <h3>A 9-to-6 in the dispensary, honestly</h3></div>
       </a>
@@ -125,7 +131,7 @@
   <div class="feat-row">
     <a class="card reveal-card" href="#"><div class="media square"><div class="ph t6" style="background-image:url('assets/sunscreen-smile.jpg'),var(--grad)"></div></div><div class="card-text"><div class="row"><span>Skin</span><span>3 min</span></div><h3>Sunscreen, decoded</h3></div></a>
     <a class="card reveal-card" href="#"><div class="media square"><div class="ph t3" style="background-image:url('assets/serum-ritual.jpg'),var(--grad)"></div></div><div class="card-text"><div class="row"><span>Wellness</span><span>5 min</span></div><h3>Supplements worth a second look</h3></div></a>
-    <a class="card reveal-card" href="#"><div class="media square"><div class="ph t1" style="background-image:url('assets/pool-sunset.jpg'),var(--grad)"></div></div><div class="card-text"><div class="row"><span>Rituals</span><span>3 min</span></div><h3>My Sunday reset</h3></div></a>
+    <a class="card reveal-card" href="#"><div class="media square"><div class="ph t1" style="background-image:url('assets/meadow-picnic.jpg'),var(--grad)"></div></div><div class="card-text"><div class="row"><span>Rituals</span><span>3 min</span></div><h3>My Sunday reset</h3></div></a>
   </div>
 </section>
 
@@ -139,9 +145,9 @@
       <dl><div><dt>Category</dt><dd>Health Notes</dd></div><div><dt>Tags</dt><dd>Antibiotics</dd></div></dl></div></article>
     <article class="note reveal-card"><div class="media land"><div class="ph t2" style="background-image:url('assets/serum-ritual.jpg'),var(--grad)"></div></div><div class="card-text"><h3>The bathroom cabinet audit</h3><time>September 15, 2026</time>
       <dl><div><dt>Category</dt><dd>Home</dd></div><div><dt>Tags</dt><dd>Expiry dates</dd></div></dl></div></article>
-    <article class="note reveal-card"><div class="media land"><div class="ph t4" style="background-image:url('assets/cafe-zanzibar.jpg'),var(--grad)"></div></div><div class="card-text"><h3>Slow mornings before a long shift</h3><time>September 8, 2026</time>
+    <article class="note reveal-card"><div class="media land"><div class="ph t4" style="background-image:url('assets/forest.jpg'),var(--grad)"></div></div><div class="card-text"><h3>Slow mornings before a long shift</h3><time>September 8, 2026</time>
       <dl><div><dt>Category</dt><dd>Rituals</dd></div><div><dt>Tags</dt><dd>Routine</dd></div></dl></div></article>
-    <article class="note reveal-card"><div class="media land"><div class="ph t6" style="background-image:url('assets/flatlay.jpg'),var(--grad)"></div></div><div class="card-text"><h3>Reading a label in 30 seconds</h3><time>September 1, 2026</time>
+    <article class="note reveal-card"><div class="media land"><div class="ph t6" style="background-image:url('assets/frangipani.jpg'),var(--grad)"></div></div><div class="card-text"><h3>Reading a label in 30 seconds</h3><time>September 1, 2026</time>
       <dl><div><dt>Category</dt><dd>Myth Check</dd></div><div><dt>Tags</dt><dd>Skincare</dd></div></dl></div></article>
   </div>
 </section>
@@ -155,16 +161,16 @@
 
     <div class="gs-cols">
       <div class="gs-col" data-shift="-0.22">
-        <div class="gs-tile"><div class="ph t6" style="background-image:url('assets/desert-dunes.jpg'),var(--grad)"></div></div>
+        <div class="gs-tile"><div class="ph t6" style="background-image:url('assets/bougainvillea.jpg'),var(--grad)"></div></div>
         <div class="gs-tile sq"><div class="ph t3" style="background-image:url('assets/sunscreen-smile.jpg'),var(--grad)"></div></div>
-        <div class="gs-tile"><div class="ph t1" style="background-image:url('assets/savanna-hat.jpg'),var(--grad)"></div></div>
-        <div class="gs-tile sq"><div class="ph t5" style="background-image:url('assets/flatlay.jpg'),var(--grad)"></div></div>
+        <div class="gs-tile"><div class="ph t1" style="background-image:url('assets/sunflowers.jpg'),var(--grad)"></div></div>
+        <div class="gs-tile sq"><div class="ph t5" style="background-image:url('assets/tulips.jpg'),var(--grad)"></div></div>
       </div>
       <div class="gs-col gs-col--c" data-shift="0">
-        <div class="gs-tile sq"><div class="ph t4" style="background-image:url('assets/serum-ritual.jpg'),var(--grad)"></div></div>
-        <div class="gs-tile wide"><div class="ph t5" style="background-image:url('assets/hero-beach.jpg'),var(--grad)"></div></div>
+        <div class="gs-tile sq"><div class="ph t4" style="background-image:url('assets/vineyard.jpg'),var(--grad)"></div></div>
+        <div class="gs-tile wide"><div class="ph t5" style="background-image:url('assets/wildflowers.jpg'),var(--grad)"></div></div>
         <div class="gs-tile gs-focus">
-          <div class="ph t2" style="background-image:url('assets/portrait-sun.jpg'),var(--grad)"></div>
+          <div class="ph t2" style="background-image:url('assets/portrait-sea.jpg'),var(--grad)"></div>
           <div class="gs-tint"></div>
           <svg class="gs-frame" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%"/></svg>
           <div class="gs-menu" aria-hidden="true">
@@ -175,12 +181,12 @@
             <div class="it">See what I stand for</div>
           </div>
         </div>
-        <div class="gs-tile sq"><div class="ph t3" style="background-image:url('assets/cafe-zanzibar.jpg'),var(--grad)"></div></div>
+        <div class="gs-tile sq"><div class="ph t3" style="background-image:url('assets/meadow-picnic.jpg'),var(--grad)"></div></div>
       </div>
       <div class="gs-col" data-shift="0.16">
-        <div class="gs-tile sq"><div class="ph t1" style="background-image:url('assets/wheat-laugh.jpg'),var(--grad)"></div></div>
-        <div class="gs-tile"><div class="ph t4" style="background-image:url('assets/pool-sunset.jpg'),var(--grad)"></div></div>
-        <div class="gs-tile sq"><div class="ph t6" style="background-image:url('assets/road-trip.jpg'),var(--grad)"></div></div>
+        <div class="gs-tile sq"><div class="ph t1" style="background-image:url('assets/umbrella-laugh.jpg'),var(--grad)"></div></div>
+        <div class="gs-tile"><div class="ph t4" style="background-image:url('assets/pool-day.jpg'),var(--grad)"></div></div>
+        <div class="gs-tile sq"><div class="ph t6" style="background-image:url('assets/forest.jpg'),var(--grad)"></div></div>
         <div class="gs-tile"><div class="ph t2" style="background-image:url('assets/capetown.jpg'),var(--grad)"></div></div>
       </div>
     </div>
@@ -210,10 +216,10 @@
   <div class="do-pin"><h2 class="do-title">What I <em>do</em></h2></div>
   <div class="stairs">
     <div class="step" style="--c:1/6;--ar:4/3"><div class="step-media"><div class="ph t5" style="background-image:url('assets/serum-ritual.jpg'),var(--grad)"></div></div><div class="step-txt"><span class="step-label">Pharmacy</span><span class="step-sub">Retail dispensary</span></div></div>
-    <div class="step" style="--c:4/11;--ar:16/10"><div class="step-media"><div class="ph t2" style="background-image:url('assets/road-trip.jpg'),var(--grad)"></div></div><div class="step-txt"><span class="step-label">Content</span><span class="step-sub">TikTok &amp; Instagram</span></div></div>
+    <div class="step" style="--c:4/11;--ar:16/10"><div class="step-media"><div class="ph t2" style="background-image:url('assets/tulips.jpg'),var(--grad)"></div></div><div class="step-txt"><span class="step-label">Content</span><span class="step-sub">TikTok &amp; Instagram</span></div></div>
     <div class="step rev" style="--c:7/13;--ar:1/1"><div class="step-media"><div class="ph t6" style="background-image:url('assets/sunscreen-smile.jpg'),var(--grad)"></div></div><div class="step-txt"><span class="step-label">Explainers</span><span class="step-sub">Health, in plain words</span></div></div>
-    <div class="step rev" style="--c:4/10;--ar:4/3"><div class="step-media"><div class="ph t4" style="background-image:url('assets/flatlay.jpg'),var(--grad)"></div></div><div class="step-txt"><span class="step-label">Collaborations</span><span class="step-sub">Brands &amp; campaigns</span></div></div>
-    <div class="step" style="--c:1/7;--ar:16/10"><div class="step-media"><div class="ph t1" style="background-image:url('assets/cafe-zanzibar.jpg'),var(--grad)"></div></div><div class="step-txt"><span class="step-label">Quizzes</span><span class="step-sub">Free &amp; premium</span></div></div>
+    <div class="step rev" style="--c:4/10;--ar:4/3"><div class="step-media"><div class="ph t4" style="background-image:url('assets/frangipani.jpg'),var(--grad)"></div></div><div class="step-txt"><span class="step-label">Collaborations</span><span class="step-sub">Brands &amp; campaigns</span></div></div>
+    <div class="step" style="--c:1/7;--ar:16/10"><div class="step-media"><div class="ph t1" style="background-image:url('assets/sunflowers.jpg'),var(--grad)"></div></div><div class="step-txt"><span class="step-label">Quizzes</span><span class="step-sub">Free &amp; premium</span></div></div>
   </div>
 </section>
 
@@ -241,35 +247,20 @@
   </div>
 </section>
 
-<!-- ============ 10. CTA ARCH + NEWSLETTER ============ -->
-<section class="cta" id="connect">
-  <h2 class="cta-head" data-split>A moment to connect <em>before the next post</em></h2>
-
-  <div class="cta-arch">
-    <div class="cta-bg"><div class="ph t1" style="background-image:url('assets/capetown-blur.jpg'),var(--grad)"></div><div class="cta-pale"></div></div>
-
-    <a class="float-card fc1" href="#notes" data-speed="0.35"><div class="ph t6" style="background-image:url('assets/sunscreen-smile.jpg'),var(--grad)"></div><span>Sunscreen, decoded</span></a>
-    <div class="cta-card" data-speed="0.12">
-      <h3>Let's make something worth sharing.</h3>
-      <a class="link" href="mailto:hello@example.com">Get in touch</a>
-      <div class="blob"></div>
-    </div>
-    <a class="float-card fc2" href="#notes" data-speed="-0.2"><div class="ph t4" style="background-image:url('assets/pool-sunset.jpg'),var(--grad)"></div><span>My Sunday reset</span></a>
-    <a class="float-card fc3" href="#notes" data-speed="0.25"><div class="ph t2" style="background-image:url('assets/road-trip.jpg'),var(--grad)"></div><span>Finishing the course</span></a>
-
-    <div class="news">
-      <span class="news-dot"></span>
-      <h2 data-split>One honest note <em>a week</em></h2>
-      <form id="newsForm"><input type="email" required placeholder="Your email" aria-label="Email"><button type="submit" aria-label="Subscribe">→</button></form>
-      <small id="newsMsg"></small>
-    </div>
+<!-- ============ 10. NEWSLETTER ============ -->
+<section class="newsletter" id="newsletter">
+  <div class="news">
+    <span class="news-dot"></span>
+    <h2 data-split>Sign up to <em>my newsletter</em></h2>
+    <form id="newsForm" data-fade><input type="email" required placeholder="Your email" aria-label="Email" autocomplete="email"><button type="submit" aria-label="Subscribe">→</button></form>
+    <small id="newsMsg" aria-live="polite"></small>
   </div>
 </section>
 
 </main>
 
 <!-- ============ 11. FOOTER — rising wordmark ============ -->
-<footer>
+<footer id="contact">
   <div class="cols">
     <div><h4>Explore</h4><ul><li><a href="#about">About</a></li><li><a href="#notes">Notes</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#quizzes">Quizzes</a></li></ul></div>
     <div><h4>Follow</h4><ul><li><a href="https://www.tiktok.com/@mokoena_bree" target="_blank" rel="noopener">TikTok</a></li><li><a href="https://www.instagram.com/mokoena_bree" target="_blank" rel="noopener">Instagram</a></li><li><a href="mailto:hello@example.com">Email</a></li></ul></div>
