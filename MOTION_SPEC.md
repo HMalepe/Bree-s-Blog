@@ -28,13 +28,13 @@ Source of truth for every animation in `js/main.js`. Hand this file to an AI IDE
 ### 0. Loader and hero
 The page always opens at the top (`history.scrollRestoration = 'manual'` inline in `<head>`), and scrolling stays locked (`lenis.stop()`) until the curtain has lifted. The intro starts once fonts **and** the hero photo are decoded, capped at 3.5s. A `#hash` link glides to its section after the curtain lifts.
 1. The "bree." word lifts and fades (0.7s, `power3.in`).
-2. The wine curtain wipes up (`clipPath inset(0 0 100% 0)`, 1.1s, `expo.inOut`).
+2. The cobalt curtain wipes up (`clipPath inset(0 0 100% 0)`, 1.1s, `expo.inOut`).
 3. The hero bg goes from `scale 1.35` to 1 (2.4s). It overlaps step 2 by 0.75s.
 4. Hero title words rise, stagger 0.08. Then the right column fades up.
 5. On scroll: the bg drifts `yPercent 14`. The text goes to `y -80`, fading to 0.15.
 
 ### 2. About: the orbit
-- The gold SVG path is drawn with `strokeDashoffset L → 0`, scrubbed from `top 75%` to `bottom 60%`. `L` is the path's **on-screen** length, measured in JS and re-measured on refresh. Don't use `pathLength=1` here: the SVG is stretched (`preserveAspectRatio="none"`) with `vector-effect: non-scaling-stroke`, so Chrome lays dashes out in screen pixels and a unit-length dash never reaches the end of the path.
+- The sand SVG path is drawn with `strokeDashoffset L → 0`, scrubbed from `top 75%` to `bottom 60%`. `L` is the path's **on-screen** length, measured in JS and re-measured on refresh. Don't use `pathLength=1` here: the SVG is stretched (`preserveAspectRatio="none"`) with `vector-effect: non-scaling-stroke`, so Chrome lays dashes out in screen pixels and a unit-length dash never reaches the end of the path.
 - Each bubble runs a scrubbed timeline from `top 100%` to `top 40%`:
   - the circle goes from `scale .3, opacity 0` to 1
   - each bubble holds two photos. The scenic outer photo settles from `scale 1.25` to 1, then the portrait rises over it as an arch, `circle(0% at 50% 100%)` to `circle(101%)`, which covers the bubble completely
@@ -51,12 +51,12 @@ The section is pinned, and one scrubbed timeline lasts 7 viewport heights. The s
 | a | 0 → 1.3 | Each letter of "Gallery" flies to a random x/y/rotation, blurs 14px and fades. Random stagger |
 | b | 0.5 → 3.7 | Three masonry columns rise from below the fold. Each column has its own `data-shift` offset, so they land at different heights (column parallax). The centre column lands with the focus tile exactly centred |
 | c | 3.6 → 4.6 | Every tile except the focus tile goes to `scale .5, opacity 0`, in random order |
-| d | 4.5 → 5.5 | The gold frame (an SVG rect, sized in px) traces clockwise around the focus tile. The dash length is its measured perimeter `2(w+h)`; CSS keeps it hidden (`stroke-dasharray: 0 100000`) until JS sets it |
-| e | 5.4 → 7.0 | A frosted "right-click" menu pops in (`back.out`). The highlight bar steps down the items, and the last item turns gold |
-| f | 7.35 | The menu and frame fade out, and a gold tint fills the tile |
-| g | 7.9 → 9.1 | The gold panel's `clip-path` expands from the tile's exact rect to full-bleed. Then the Principles heading rises in |
+| d | 4.5 → 5.5 | The sand frame (an SVG rect, sized in px) traces clockwise around the focus tile. The dash length is its measured perimeter `2(w+h)`; CSS keeps it hidden (`stroke-dasharray: 0 100000`) until JS sets it |
+| e | 5.4 → 7.0 | A frosted "right-click" menu pops in (`back.out`). The highlight bar steps down the items, and the last item turns lemon |
+| f | 7.35 | The menu and frame fade out, and an ocean tint fills the tile |
+| g | 7.9 → 9.1 | The ocean panel's `clip-path` expands from the tile's exact rect to full-bleed. Then the Principles heading rises in |
 
-The unpin is seamless because the next section (`.principles`) has the same flat gold background.
+The unpin is seamless because the next section (`.principles`) has the same flat ocean background.
 
 ### 6. Principles
 Each row: the rule draws `scaleX 0 → 1` (1.4s), then the number, key and value rise with a stagger.
@@ -77,7 +77,7 @@ The cards rise 70px, stagger 0.12. On hover-capable devices they tilt toward the
 - Floating cards use the parallax float primitive with different speeds. The centre card has a CSS blob that morphs its border radius on a 9s loop.
 - Newsletter (scrubbed from `top 85%` to `top 25%`):
   - the pale layer fades in over the warm bg
-  - `--news-ink` tweens from cream to wine **on `.cta-arch`**, so the newsletter text and the float-card labels follow the background (`.cta-card` stays cream on its gold panel)
+  - `--news-ink` tweens from cream to cobalt **on `.cta-arch`**, so the newsletter text and the float-card labels follow the background (`.cta-card` stays cream on its ocean panel)
   - the dot pulses on a CSS loop
 
 ### 11. Footer

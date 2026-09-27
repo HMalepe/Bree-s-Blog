@@ -6,6 +6,8 @@
    ===================================================================== */
 (() => {
   const root = document.documentElement;
+  // colours come from the :root tokens in styles.css, so a re-skin never touches this file
+  const token = name => getComputedStyle(root).getPropertyValue(name).trim();
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -288,7 +290,7 @@
     // c) everything except the focus tile shrinks away
     tl.to(others, { scale: .5, autoAlpha: 0, duration: 1, stagger: { each: .05, from: 'random' } }, 3.6);
 
-    // d) gold frame traces around the focus tile
+    // d) sand frame traces around the focus tile
     //    (rect is sized in px, so its perimeter is the dash length)
     const frameLen = () => {
       const r = frame.ownerSVGElement.getBoundingClientRect();
@@ -303,13 +305,13 @@
       .to(hl, { y: () => itemStep(1), duration: .3 }, 5.95)
       .to(hl, { y: () => itemStep(2), duration: .3 }, 6.35)
       .to(hl, { y: () => itemStep(3), duration: .3 }, 6.75)
-      .to(items[3], { color: '#F0CF83', duration: .2 }, 6.95);
+      .to(items[3], { color: token('--lemon'), duration: .2 }, 6.95);
 
-    // f) menu + frame fade, image tints gold
+    // f) menu + frame fade, image tints ocean
     tl.to([menu, frame], { autoAlpha: 0, duration: .35 }, 7.35)
       .to(tint, { opacity: .9, duration: .6 }, 7.35);
 
-    // g) gold panel expands from the tile to full-bleed
+    // g) ocean panel expands from the tile to full-bleed
     tl.set(full, { autoAlpha: 1, clipPath: focusInset }, 7.9)
       .to(full, { clipPath: 'inset(0px 0px 0px 0px)', duration: 1.2, ease: 'power2.inOut' }, 7.9)
       .fromTo(fullHead, { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: .8, stagger: .15, ease: 'power2.out' }, 8.8)
@@ -364,7 +366,7 @@
 
   /* ------------------------------------------------------------------
      10. CTA — arch opens, cards float + fade, bg fades to pale,
-         newsletter ink shifts from cream to wine
+         newsletter ink shifts from cream to cobalt
      ------------------------------------------------------------------ */
   // The arch opens through clip-path only: animating margin + border-radius
   // re-laid-out and repainted the whole 250vh arch on every frame.
@@ -392,8 +394,8 @@
     scrollTrigger: { trigger: '.news', start: 'top 85%', end: 'top 25%', scrub: true } })
     .to('.cta-pale', { opacity: 1 }, 0)
     // on .cta-arch so the float-card labels follow the ink too
-    .fromTo('.cta-arch', { '--news-ink': '#FFF8EE', '--label-shadow': 'rgba(40,20,10,0.55)' },
-                         { '--news-ink': '#6B1D22', '--label-shadow': 'rgba(40,20,10,0)' }, 0);
+    .fromTo('.cta-arch', { '--news-ink': token('--cream'), '--label-shadow': token('--shadow') },
+                         { '--news-ink': token('--cobalt'), '--label-shadow': token('--shadow').replace(/[\d.]+\)$/, '0)') }, 0);
 
   /* ------------------------------------------------------------------
      11. FOOTER — wordmark rises out of the bottom edge
