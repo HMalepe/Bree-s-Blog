@@ -129,18 +129,24 @@ jobs:
               if not re.fullmatch(r'[a-z0-9-]+', name):
                   raise SystemExit(f'bad video name: {name!r}')
               req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-              open('/tmp/src.mp4', 'wb').write(urllib.request.urlopen(req, timeout=120).read())
-              # short side 1080 either way: 1920x1080 landscape, 1080x1920 (or 608x1080) portrait.
-              # Silent H.264 with faststart, so it starts playing before it has fully downloaded.
-              scale = "scale='if(gt(iw,ih),-2,min(1080,iw))':'if(gt(iw,ih),min(1080,ih),-2)':flags=lanczos"
+              try:
+                  open('/tmp/src.mp4', 'wb').write(urllib.request.urlopen(req, timeout=120).read())
+              except Exception as e:
+                  print(f'skipping {name}: {url}: {e}'); continue
+              # landscape: 1080 tall (1920x1080, desktop). portrait: 720 wide (720x1280, phones),
+              # which keeps a 12s clip around 2MB. Silent H.264 with faststart, so it starts
+              # playing before it has fully downloaded.
+              scale = "scale='if(gt(iw,ih),-2,min(720,iw))':'if(gt(iw,ih),min(1080,ih),-2)':flags=lanczos"
               ffmpeg('-ss', str(start), '-t', str(dur), '-i', '/tmp/src.mp4', '-an',
                      '-vf', f'{scale},fps=30', '-c:v', 'libx264', '-preset', 'slow', '-crf', '27',
                      '-pix_fmt', 'yuv420p', '-movflags', '+faststart', f'assets/{name}.mp4')
               # poster = the first frame: shown until the video plays, and instead of it for reduced motion
               ffmpeg('-ss', str(start), '-i', '/tmp/src.mp4', '-frames:v', '1', '-vf', scale,
-                     '-q:v', '4', f'assets/{name}-poster.jpg')
+                     '-q:v', '5', f'assets/{name}-poster.jpg')
               print(name, os.path.getsize(f'assets/{name}.mp4') // 1024, 'KB', url)
               log.append(f'{name}: {url} start={start} duration={dur}')
+          if not log:
+              raise SystemExit('no clip could be fetched')
           open('assets/video-sources.txt', 'a').write('\n'.join(log) + '\n')
           PY
 
