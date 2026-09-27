@@ -161,9 +161,9 @@ jobs:
               ffmpeg('-ss', str(start), '-t', str(dur), '-i', '/tmp/src.mp4', '-an',
                      '-vf', f'{scale},fps=30', '-c:v', 'libx264', '-preset', 'slow', '-crf', '27',
                      '-pix_fmt', 'yuv420p', '-movflags', '+faststart', f'assets/{name}.mp4')
-              # VP9 WebM: ~45% smaller; main.js prefers it wherever the browser can play it
+              # VP9 WebM at crf 44: about half the MP4 size at the same look behind the overlay; main.js prefers it wherever the browser can play it
               ffmpeg('-ss', str(start), '-t', str(dur), '-i', '/tmp/src.mp4', '-an',
-                     '-vf', f'{scale},fps=30', '-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '38',
+                     '-vf', f'{scale},fps=30', '-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '44',
                      '-row-mt', '1', '-deadline', 'good', '-cpu-used', '2', f'assets/{name}.webm')
               # poster = the first frame: shown until the video plays, and instead of it for reduced motion
               ffmpeg('-ss', str(start), '-i', '/tmp/src.mp4', '-frames:v', '1', '-vf', scale,
