@@ -24,6 +24,10 @@ on:
         description: 'Output name(s) for each clip, comma-separated (e.g. hero-wide,hero-tall)'
         required: false
         default: 'hero-wide'
+      video_preview:
+        description: 'true = only commit assets/video-preview.jpg (3 frames per clip), no videos'
+        required: false
+        default: 'false'
       video_start:
         description: 'Seconds to skip at the start of the clip'
         required: false
@@ -102,6 +106,7 @@ jobs:
         env:
           URL: ${{ inputs.video_url }}
           NAME: ${{ inputs.video_name }}
+          PREVIEW: ${{ inputs.video_preview }}
           START: ${{ inputs.video_start }}
           DURATION: ${{ inputs.video_duration }}
         run: |
@@ -121,6 +126,8 @@ jobs:
 
           def ffmpeg(*args):
               subprocess.run([ff, '-y', '-loglevel', 'error', *args], check=True)
+          preview = os.environ.get('PREVIEW') == 'true'
+          rows = []
           log = []
           for url, name in zip(urls, names):
               host = urlparse(url).hostname or ''
@@ -133,6 +140,20 @@ jobs:
                   open('/tmp/src.mp4', 'wb').write(urllib.request.urlopen(req, timeout=120).read())
               except Exception as e:
                   print(f'skipping {name}: {url}: {e}'); continue
+              if preview:
+                  # one row per clip: frames at 10%, 50% and 90% of the clip, each 480x270 letterboxed
+                  probe = subprocess.run([ff, '-i', '/tmp/src.mp4'], capture_output=True, text=True).stderr
+                  h, m, sec = re.search(r'Duration: (\d+):(\d+):([\d.]+)', probe).groups()
+                  length = int(h) * 3600 + int(m) * 60 + float(sec)
+                  size = re.search(r'Video:.*? (\d{3,5}x\d{3,5})', probe).group(1)
+                  print(f'{name}: {size}, {length:.1f}s, {url}')
+                  fit = 'scale=480:270:force_original_aspect_ratio=decrease,pad=480:270:-1:-1:color=black'
+                  for i, f in enumerate((.1, .5, .9)):
+                      ffmpeg('-ss', f'{length * f:.2f}', '-i', '/tmp/src.mp4', '-frames:v', '1', '-vf', fit, f'/tmp/{name}-{i}.jpg')
+                  ffmpeg(*sum([['-i', f'/tmp/{name}-{i}.jpg'] for i in range(3)], []),
+                         '-filter_complex', 'hstack=3', f'/tmp/row-{name}.jpg')
+                  rows.append(f'/tmp/row-{name}.jpg'); log.append(name)
+                  continue
               # landscape: 1080 tall (1920x1080, desktop). portrait: 720 wide (720x1280, phones),
               # which keeps a 12s clip around 2MB. Silent H.264 with faststart, so it starts
               # playing before it has fully downloaded.
@@ -147,7 +168,14 @@ jobs:
               log.append(f'{name}: {url} start={start} duration={dur}')
           if not log:
               raise SystemExit('no clip could be fetched')
-          open('assets/video-sources.txt', 'a').write('\n'.join(log) + '\n')
+          if preview:
+              # rows top to bottom in the order the clips were given (skipped clips leave no row)
+              ins = sum([['-i', r] for r in rows], [])
+              ffmpeg(*ins, *(['-filter_complex', f'vstack={len(rows)}'] if len(rows) > 1 else []),
+                     '-q:v', '5', 'assets/video-preview.jpg')
+              print('preview rows:', ', '.join(log))
+          else:
+              open('assets/video-sources.txt', 'a').write('\n'.join(log) + '\n')
           PY
 
       - name: Commit
