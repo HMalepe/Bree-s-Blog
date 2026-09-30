@@ -9,11 +9,11 @@ The hero stills (`hero-wide-poster.jpg`, `hero-tall-poster.jpg`) are the first f
 | `portrait-sea.jpg` | 3:4 | gallery **focus tile** (gets the sand frame) |
 | `cliff-hat.jpg` | 4:5 | featured tall card |
 | `serum-ritual.jpg` | 1:1 | bubble "Health Notes" |
-| `supplements.jpg` | 1:1 | "Supplements" card |
-| `cafe-harbour.jpg` | 3:2 | "9-to-6" card |
+| `supplements.jpg` | 4:5 | "Supplements" card |
+| `cafe-harbour.jpg` | 16:11 | "9-to-6" card (dispensary interior) |
 | `sunscreen-smile.jpg` | 1:1 | bubble "Myths" |
 | `bougainvillea.jpg` | 3:4 | bubble outer |
-| `road-trip.jpg` | 3:2 | "Finishing the course" note |
+| `road-trip.jpg` | 16:10 | "Finishing the course" note |
 | `frangipani.jpg` | 1:1 | "Reading a label" note |
 | `pool-day.jpg` | 4:5 | bubble "Rituals" |
 | `capetown.jpg` | 16:9 | bubble "Myths" outer |
@@ -29,9 +29,9 @@ The hero stills (`hero-wide-poster.jpg`, `hero-tall-poster.jpg`) are the first f
 | `explainers.jpg` | 1:1 | "Explainers" step |
 | `content-step.jpg` | 16:10 | "Content" step |
 | `collab-step.jpg` | 4:3 | "Collaborations" step |
-| `quizzes-step.jpg` | 16:10 | "Quizzes" step |
+| `quizzes-step.jpg` | 16:10 | "Quizzes" step (quiz card placeholder) |
 | `gallery-garden.jpg` | 3:4 | gallery |
-| `gallery-skin.jpg` | 1:1 | gallery |
+| `gallery-skin.jpg` | 3:4 | gallery |
 | `gallery-coat.jpg` | 3:4 | gallery |
 | `gallery-table.jpg` | 1:1 | gallery |
 | `gallery-yard.jpg` | 1:1 | gallery |
@@ -39,7 +39,7 @@ The hero stills (`hero-wide-poster.jpg`, `hero-tall-poster.jpg`) are the first f
 | `gallery-trees.jpg` | 1:1 | gallery |
 | `gallery-shade.jpg` | 1:1 | gallery |
 | `gallery-coast.jpg` | 3:4 | gallery |
-| `gallery-couch.jpg` | 1:1 | gallery |
+| `gallery-couch.jpg` | 3:4 | gallery |
 | `gallery-town.jpg` | 3:4 | gallery |
 
 ## Hero
