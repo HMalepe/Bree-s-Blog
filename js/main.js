@@ -80,9 +80,11 @@
      ------------------------------------------------------------------ */
   gsap.registerPlugin(ScrollTrigger);
   ScrollTrigger.config({ ignoreMobileResize: true });
+  const phone = () => matchMedia('(max-width: 760px)').matches;
   gsap.defaults({ ease: 'expo.out', duration: 1.2 });
 
-  if (window.Lenis) {
+  /* Native scroll on touch. Lenis fights the address bar and momentum scrolling. */
+  if (window.Lenis && matchMedia('(hover: hover) and (pointer: fine)').matches && !phone()) {
     lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 1 });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(t => lenis.raf(t * 1000));
@@ -288,7 +290,7 @@
     const tl = gsap.timeline({
       defaults: { ease: 'none' },
       scrollTrigger: {
-        trigger: gs, start: 'top top', end: () => '+=' + H() * 7,
+        trigger: gs, start: 'top top', end: () => '+=' + H() * (phone() ? 4.5 : 7),
         pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1
       }
     });
@@ -353,7 +355,7 @@
   /* ------------------------------------------------------------------
      7. WHAT I DO — pinned title sharpens from blur, steps clip-reveal
      ------------------------------------------------------------------ */
-  gsap.timeline({ scrollTrigger: { trigger: '.do-pin', start: 'top top', end: '+=90%', pin: true, scrub: 1 } })
+  gsap.timeline({ scrollTrigger: { trigger: '.do-pin', start: 'top top', end: () => phone() ? '+=55%' : '+=90%', pin: true, scrub: 1, invalidateOnRefresh: true } })
     .fromTo('.do-title', { filter: 'blur(18px)', autoAlpha: .12, scale: .88 },
                          { filter: 'blur(0px)', autoAlpha: 1, scale: 1, ease: 'power2.out', duration: 1 })
     .to('.do-title', { y: () => -vh() * .12, duration: .4 });
@@ -391,6 +393,7 @@
      PARALLAX FLOAT — [data-speed] drifts across the viewport (About bubbles)
      ------------------------------------------------------------------ */
   $$('[data-speed]').forEach(el => {
+    if (phone() && el.classList.contains('bubble')) return;
     const speed = parseFloat(el.dataset.speed);
     gsap.fromTo(el, { y: () => vh() * speed * .5 }, { y: () => -vh() * speed * .5, ease: 'none',
       scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true } });
