@@ -11,15 +11,15 @@ The hero stills (`hero-wide-poster.jpg`, `hero-tall-poster.jpg`) are the first f
 | `serum-ritual.jpg` | 1:1 | bubble "Health Notes" |
 | `supplements.jpg` | 4:5 | "Supplements" card |
 | `cafe-harbour.jpg` | 16:11 | "9-to-6" card (dispensary interior) |
-| `sunscreen-smile.jpg` | 1:1 | bubble "Myths" |
-| `bougainvillea.jpg` | 3:4 | bubble outer |
+| `sunscreen-smile.jpg` | 1:1 | bubble "Let’s bust a few myths" |
+| `bougainvillea.jpg` | 3:4 | bubble "Myths" outer |
 | `road-trip.jpg` | 16:10 | "Finishing the course" note |
 | `frangipani.jpg` | 1:1 | "Reading a label" note |
-| `pool-day.jpg` | 4:5 | bubble "Rituals" |
-| `capetown.jpg` | 16:9 | bubble "Myths" outer |
-| `umbrella-laugh.jpg` | 3:4 | bubble "Quizzes" |
-| `vineyard.jpg` | 16:9 | bubble "Quizzes" outer |
-| `wildflowers.jpg` | 16:9 | bubble "Health Notes" outer |
+| `pool-day.jpg` | 4:5 | bubble "Mzansi" outer |
+| `capetown.jpg` | 16:9 | bubble "What to do in Mzansi" (Bo-Kaap) |
+| `umbrella-laugh.jpg` | 3:4 | bubble "Let’s create" (brand collabs) |
+| `vineyard.jpg` | 16:9 | bubble "Let’s create" outer |
+| `wildflowers.jpg` | 16:9 | bubble "Explain it like a friend" outer |
 | `forest.jpg` | 3:4 | "Slow mornings" note |
 | `meadow-picnic.jpg` | 4:5 | "Sunday reset" card |
 | `greenhouse.jpg` | 16:11 | "Natural doesn't mean harmless" card |
@@ -46,5 +46,5 @@ The hero stills (`hero-wide-poster.jpg`, `hero-tall-poster.jpg`) are the first f
 
 `hero-wide` (landscape screens) and `hero-tall` (portrait screens) are the Mixkit clips in `video-sources.txt`, each as VP9 `.webm` and H.264 `.mp4`. main.js picks the clip by screen orientation, starts it, and fades it in over the poster. Reduced-motion and no-JS visitors keep the still poster.
 
-The four About bubbles each have a scenic outer photo (wildflowers, Cape Town, vineyard, bougainvillea). The portrait rises over it as an arch.
+The four About bubbles each have a scenic outer photo (wildflowers, pool day, vineyard, bougainvillea). The portrait rises over it as an arch.
 Keep each file under about 400KB (export as JPG at 80% quality, or convert to WebP and update the paths).

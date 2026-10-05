@@ -65,7 +65,7 @@ Loader: a fixed full-screen wine layer (z 100) with "bree." centred in blush ser
 Nav: fixed, flex space-between, padding 18px var(--pad), mix-blend-mode:difference, white.
 - Left: a 34px sun-mark SVG (circle r7 plus 8 rays). It rotates 180deg on hover over 1.2s.
 - Right: a 42px circular burger, 1.5px border, three 16px bars. With .menu-open on <html> the bars become an X.
-Overlay menu: fixed wine panel, links bottom-aligned in serif at clamp(40px,8vw,104px).
+Overlay menu: fixed panel, links bottom-aligned in serif at clamp(40px,8vw,104px): About me (#about), What I’m into (#notes), Where I’ve been (#gallery), Let’s be friends (#contact).
 - It opens with clip-path circle(0% → 150%) centred on the burger (calc(100% - 42px) 39px), .9s cubic-bezier(.7,0,.2,1).
 - Links rise from translateY(60%) with transition-delays .25s, .31s, .37s, .43s, .49s. Hovered links turn italic.
 In main.js add setMenu(open): toggle html.menu-open and aria-expanded/label/hidden, and stop/start Lenis (or lock body overflow when there's no Lenis). Escape closes the menu. Every a[href^="#"] closes the menu and scrolls with lenis.scrollTo(target,{duration:1.6}), falling back to scrollIntoView.
@@ -88,7 +88,7 @@ In js/main.js:
 ```
 Hero: min-height 100svh, 2-column grid (1 column under 760px), cream text over a full-bleed .hero-bg.
 - The .hero-bg .ph sits at inset:-10% 0 (will-change:transform, no filter), under a darkening gradient (rgba(0,0,0,.06) → .36). Under 760px set background-position:28% center so the subject stays in the portrait crop.
-- Title h1 [data-split="hero"]: "Bree" then a block line with a small italic "behind the" (.34em) and "Counter". Serif clamp(52px,8.2vw,124px), line-height .98, letter-spacing -.03em. Line 2 is indented .4em.
+- Title h1 [data-split="hero"]: "Bree" then a block line with a small italic "beyond the" (.34em) and "Counter". Serif clamp(52px,8.2vw,124px), line-height .98, letter-spacing -.03em. Line 2 is indented .4em.
 - Right column: "South Africa", then a 3-col justified grid of the words "Pharmacist by day, creator by night". Below it, a serif lead "Honest health notes, small rituals, and life between prescriptions." and a .link "Start reading". Both groups are [data-fade].
 - Scroll cue: a 1px × 48px line at bottom-centre with a cream bar looping translateY(-100%→100%) every 2s.
 Intro. Put history.scrollRestoration='manual' in an inline <head> script, scrollTo(0,0) plus lenis.scrollTo(0,{immediate:true,force:true}), and lenis.stop() until the curtain is gone. Play the paused timeline (then ScrollTrigger.refresh()) 250ms after fonts AND the hero photo are loaded and decoded (new Image + img.decode()), capped with a 3.5s Promise.race. Also add <link rel="preload" as="image" href="assets/hero-beach.jpg" fetchpriority="high">:
@@ -102,14 +102,19 @@ Scroll-out (scrub true, trigger .hero, top top → bottom top): the bg moves to 
 
 ### 5. About: orbit curve and bubbles
 ```
-Section .about: a label "About", an h2 [data-split] "The pharmacist you'd text <em>if you could.</em>" (wine, em in ink), and a muted blurb. Grid 1fr 2fr.
+Section .about: a label "About me", an h2 [data-split] "This is the part where I let you into <em>the rest of my world.</em>" (em in ink), and a muted blurb: "I’m Bree — a pharmacist, content creator and Joburg girl with a passport mindset. I’m figuring out how to make a busy life feel full — through travel, movement, good food, new experiences and all the little moments in between. This is where I share the life I’m building, one adventure at a time." Grid 1fr 2fr.
 .orbit: position relative, height clamp(1000px,140vw,1500px). It contains an absolute SVG, viewBox 0 0 1000 1400, preserveAspectRatio="none", with one path #curve:
   M1000 40 C 780 60, 820 260, 560 300 S 120 330, 150 520 S 700 640, 820 760 S 520 980, 260 1040 S 60 1250, 420 1380
   stroke var(--gold), width 2, vector-effect:non-scaling-stroke, no fill.
 Four .bubble blocks, absolutely placed (b1 top 2% right 4%, b2 top 28% left 3%, b3 top 52% right 7%, b4 top 77% left 12%). Each has:
-- a round .bubble-media, clamp(150px,20vw,270px), with two .ph layers (outer + .bubble-inner) and a centred label (small caption + serif italic word)
-- a serif wine side-heading [data-split]. b1/b3 put the text on the left (row-reverse); b2/b4 on the right. Under 760px they stack in a column.
-Bubbles and labels: Health/Notes "Explain it like a friend", Series/Myths "Myths, gently busted", Play/Quizzes "Test what you know", Off duty/Rituals "Life off the clock". data-speed: .08, -.06, .1, -.05.
+- a round .bubble-media (z-index 1, so its shadow falls over the label's backing), clamp(150px,20vw,270px), with two .ph layers (outer + .bubble-inner) and a centred label (small caption + serif italic word)
+- a div.bubble-side holding a serif h3 [data-split] (max-width 12ch; margin-left auto on b1/b3) and an optional muted p.bubble-sub [data-fade]. b1/b3 put the text on the left (row-reverse); b2/b4 on the right.
+Bubbles, in order (label · heading · subline · inner ← outer photo):
+  1 Health/Notes · "Explain it like a friend." · "Health without the jargon." · serum-ritual ← wildflowers
+  2 Travel/Mzansi · "What to do in Mzansi" · "Travel, fitness & lifestyle." · capetown (Bo-Kaap) ← pool-day
+  3 Brands/Collabs · "Let’s create." · "Brand collaborations & campaigns." · umbrella-laugh ← vineyard
+  4 Series/Myths · "Let’s bust a few myths. <em>Gently.</em>" · (no subline) · sunscreen-smile ← bougainvillea
+data-speed: .08, -.06, .1, -.05.
 Motion:
 - Curve draw, scrubbed (trigger #orbit, top 75% → bottom 60%, scrub 1, invalidateOnRefresh): strokeDashoffset L → 0.
   IMPORTANT: do NOT use pathLength="1". The SVG is stretched with a non-scaling stroke, so Chrome lays out dashes in screen pixels. Measure L in JS: sample 240 points with getPointAtLength ONCE at startup (it is slow, ≈150–250ms, and must not run mid-scroll) and cache them; the function value then scales each cached segment by svg.clientWidth/1000 and svg.clientHeight/1400, sums them, and returns ceil(L*1.002)+4. Set strokeDasharray = L so it re-measures on refresh.
@@ -117,7 +122,7 @@ Motion:
   media scale .3/autoAlpha 0 → 1 (dur 1, power2.out, at 0)
   inner clipPath circle(0% at 50% 100%) → circle(101% at 50% 100%) (dur 1, at .55): the portrait rises as an arch until it fully replaces the scenic outer photo
   outer .ph scale 1.25 → 1 (dur 1.4, at 0)
-  (Give each bubble a real scenic OUTER photo plus a portrait INNER photo. Give .bubble-side a background:var(--bg) with padding .12em .3em so the curve passes behind the labels instead of through them.)
+  (Give each bubble a real scenic OUTER photo plus a portrait INNER photo. Give .bubble-side a background:var(--bg) with padding .3em .45em so the curve passes behind the labels instead of through them.)
   label y 26/autoAlpha 0 → rest (dur .5, at 1.1)
 - [data-speed] parallax: y goes from +vh*speed/2 to -vh*speed/2 across the viewport (scrub true, invalidateOnRefresh).
 ```
@@ -204,7 +209,7 @@ Motion:
 ### 12. Footer
 ```
 Footer: wine-deep bg, colour #EDE7DF. A 3-column grid (1fr 1fr 2fr; 2 columns under 760px, with the fine print spanning both):
-- "( Explore )" links: About, Notes, Gallery, Quizzes
+- "( Explore )" links: About me, What I’m into, Where I’ve been, Let’s be friends (same targets as the menu)
 - "( Follow )" links: TikTok, Instagram, Email
 - Fine print on the right: "Content is educational, not medical advice." / "Built by SOLUPAIR"
 Then a giant .wordmark "bree." (serif, clamp(110px,27vw,420px), letter-spacing -.06em, cream, gold ".", line-height .8), inside an overflow-hidden wrapper.

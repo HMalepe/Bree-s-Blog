@@ -142,14 +142,16 @@ html:not(.js) .loader,.static .loader{display:none}
 .orbit path{fill:none;stroke:var(--leaf);stroke-width:2;vector-effect:non-scaling-stroke}
 .bubble{position:absolute;display:flex;align-items:center;gap:clamp(18px,3vw,44px)}
 .bubble.rev{flex-direction:row-reverse;text-align:right}
-.bubble-media{position:relative;width:clamp(150px,20vw,270px);aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 26px 60px -24px color-mix(in srgb,var(--cobalt-deep) 50%,transparent);flex:none}
+.bubble-media{position:relative;z-index:1;width:clamp(150px,20vw,270px);aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 26px 60px -24px color-mix(in srgb,var(--cobalt-deep) 50%,transparent);flex:none}
 .bubble-media .ph{position:absolute;inset:0;border-radius:0}
 .bubble-inner{clip-path:circle(101% at 50% 100%)}  /* 100% = the bubble's diameter, so the arch fully covers the outer photo */
 .bubble-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:20%;color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.35);z-index:2}
 .bubble-label small{font-size:13px;letter-spacing:.02em;opacity:.9}
 .bubble-label em{font-family:var(--serif);font-size:clamp(20px,2.2vw,30px);line-height:1.1}
-.bubble-side{font-family:var(--serif);font-weight:400;color:var(--cobalt);font-size:clamp(22px,2.6vw,38px);line-height:1.12;max-width:12ch;letter-spacing:-.01em;
-  position:relative;background:var(--bg);padding:.12em .3em}  /* page-coloured backing: the green curve passes behind labels instead of striking through them */
+.bubble-side{position:relative;background:var(--bg);padding:.3em .45em}  /* page-coloured backing: the green curve passes behind labels instead of striking through them (the photo sits above it, z-index 1, so its shadow isn't sliced) */
+.bubble-side h3{font-family:var(--serif);font-weight:400;color:var(--cobalt);font-size:clamp(22px,2.6vw,38px);line-height:1.12;max-width:12ch;letter-spacing:-.01em}
+.bubble-sub{margin-top:.55em;font-size:clamp(14px,1.1vw,16px);color:var(--muted)}
+.b1 .bubble-side h3,.b3 .bubble-side h3{margin-left:auto}  /* right-aligned bubbles: the 12ch heading hugs the photo */
 .b1{top:2%;right:4%}.b1{flex-direction:row-reverse;text-align:right}
 .b2{top:28%;left:3%}.b2{flex-direction:row;text-align:left}
 .b3{top:52%;right:7%}.b3{flex-direction:row-reverse;text-align:right}
@@ -165,7 +167,8 @@ html:not(.js) .loader,.static .loader{display:none}
     width:100%;flex-direction:row!important;text-align:left!important;justify-content:flex-start;gap:16px}
   .b1,.b3{flex-direction:row-reverse!important;text-align:right!important}
   .bubble-media{width:min(148px,40vw)}
-  .bubble-side{font-size:clamp(22px,6vw,30px);max-width:11ch;background:transparent;padding:0}
+  .bubble-side{background:transparent;padding:0}
+  .bubble-side h3{font-size:clamp(22px,6vw,30px);max-width:11ch}
   .bubble-label{padding-bottom:16%}
   .bubble-label em{font-size:18px}
 }
