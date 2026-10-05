@@ -64,10 +64,13 @@
   }
   if (heroVideo && !reduce) {
     heroVideo.addEventListener('playing', () => heroVideo.classList.add('is-playing'), { once: true });
+    // Play only while the hero is mostly on screen. Decoding 1080p frames while the
+    // hero scrolls away is what made the hero→About transition stutter; by 75% the
+    // text has faded and the eye has moved on. Resumes when you scroll back up.
     new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) heroVideo.play().catch(() => {});   // autoplay blocked: poster stays
+      if (e.intersectionRatio >= 0.75) heroVideo.play().catch(() => {});   // autoplay blocked: poster stays
       else heroVideo.pause();
-    }).observe(heroVideo);
+    }, { threshold: [0, 0.75] }).observe($('.hero'));
   }
 
   if (!hasGSAP || reduce) {           // readable, static version
