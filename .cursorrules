@@ -1,5 +1,13 @@
 # Project rules (read by Claude Code; mirrored in .cursorrules)
 
+## AI operating system
+Standards live in https://github.com/HMalepe/holiday-ai-operating-system.
+Before starting, read intelligence/collaboration-principles.md and the engineering/ standards.
+For new work follow workflows/new-project.md or workflows/feature-development.md.
+Project-specific overrides go below and win over the defaults.
+
+## Project-specific rules
+
 - Static site: `index.html`, `css/styles.css`, `js/main.js`. No framework unless asked to port.
 - All animation lives in `js/main.js` using GSAP + ScrollTrigger + Lenis. Choreography is documented in `MOTION_SPEC.md` — update it whenever you change motion.
 - Create ScrollTriggers in DOM order. Anything with `pin: true` must be created before triggers below it (or call `ScrollTrigger.sort()` after).
